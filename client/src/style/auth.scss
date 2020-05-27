@@ -1,0 +1,43 @@
+$darkerGreen: #445a3a;
+$lighterGreen: #91c07b;
+
+#logo {
+  margin-top: 20vh;
+}
+
+form {
+  margin-top: 5vh;
+  width: 20vw;
+  height: 25vh;
+  padding: 3vmin;
+  background: $lighterGreen;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  .input-group {
+    width: 100%;
+    label {
+      float: left;
+      font-weight: 700;
+    }
+    input {
+      float: left;
+      width: 95%;
+      height: 4vh;
+      border-radius: 5px;
+      border: none;
+      background: $darkerGreen;
+      color: white;
+      padding-left: 1vmin;
+    }
+    #submit {
+      cursor: pointer;
+      width: 40%;
+      float: right;
+      transition: all 0.3s ease;
+      &:hover {
+        letter-spacing: 2px;
+      }
+    }
+  }
+}

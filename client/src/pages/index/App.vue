@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <div id="index-options-container">
-      <div id="index-options">
+    <div id="center-container">
+      <div id="center">
         <IndexOption Option="Dashboard" Dest="dashboard" v-if="authenticated" />
         <IndexOption Option="Listings" Dest="listings" />
         <IndexOption Option="History" Dest="history" v-if="authenticated" />
@@ -20,26 +20,25 @@ import IndexOption from "@/components/IndexOption.vue";
 import axios from "axios";
 
 export default {
-  name: "App",
+  name: "Index",
   components: {
-    IndexOption
+    IndexOption,
   },
   data() {
     return {
-      authenticated: false
+      authenticated: false,
     };
   },
   methods: {
     isAuthenticated: function() {
-      axios.post("http://localhost:3000/auth").then(response => {
+      axios.post("/auth").then((response) => {
         this.authenticated = response.data.authenticated;
-        console.log(this.authenticated);
       });
-    }
+    },
   },
   mounted() {
     this.isAuthenticated();
-  }
+  },
 };
 </script>
 

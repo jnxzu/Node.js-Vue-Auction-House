@@ -22,21 +22,24 @@ router
 router
   .route("/chats")
   .get((req, res) => {
-    res.sendFile(path.join(__dirname, "../public", "chats.html"));
+    if (!req.isAuthenticated()) res.redirect("/");
+    else res.sendFile(path.join(__dirname, "../public", "chats.html"));
   })
   .all(rejectMethod);
 
 router
   .route("/dashboard")
   .get((req, res) => {
-    res.sendFile(path.join(__dirname, "../public", "dashboard.html"));
+    if (!req.isAuthenticated()) res.redirect("/");
+    else res.sendFile(path.join(__dirname, "../public", "dashboard.html"));
   })
   .all(rejectMethod);
 
 router
   .route("/list")
   .get((req, res) => {
-    res.sendFile(path.join(__dirname, "../public", "list.html"));
+    if (!req.isAuthenticated()) res.redirect("/");
+    else res.sendFile(path.join(__dirname, "../public", "list.html"));
   })
   .all(rejectMethod);
 
@@ -50,35 +53,41 @@ router
 router
   .route("/history")
   .get((req, res) => {
-    res.sendFile(path.join(__dirname, "../public", "history.html"));
+    if (!req.isAuthenticated()) res.redirect("/");
+    else res.sendFile(path.join(__dirname, "../public", "history.html"));
   })
   .all(rejectMethod);
 
 router
   .route("/login")
   .get((req, res) => {
-    res.sendFile(path.join(__dirname, "../public", "login.html"));
+    if (req.isAuthenticated()) res.redirect("/");
+    else res.sendFile(path.join(__dirname, "../public", "login.html"));
   })
   .post(passport.authenticate("local-login"), async (req, res) => {
-    await res.redirect("/");
+    res.redirect("/");
   })
   .all(rejectMethod);
 
 router
   .route("/signup")
   .get((req, res) => {
-    res.sendFile(path.join(__dirname, "../public", "signup.html"));
+    if (req.isAuthenticated()) res.redirect("/");
+    else res.sendFile(path.join(__dirname, "../public", "signup.html"));
   })
   .post(passport.authenticate("local-signup"), async (req, res) => {
-    await res.redirect("/");
+    res.redirect("/");
   })
   .all(rejectMethod);
 
 router
   .route("/logout")
   .get((req, res) => {
-    req.logout();
-    res.redirect("/login");
+    if (!req.isAuthenticated()) res.redirect("/");
+    else {
+      req.logout();
+      res.redirect("/");
+    }
   })
   .all(rejectMethod);
 

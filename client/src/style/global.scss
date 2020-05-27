@@ -26,6 +26,18 @@ body {
   }
 }
 
+#center-container {
+  display: inline-block;
+  margin: 0 auto;
+}
+#center {
+  display: flex;
+  flex-direction: column;
+  div {
+    margin-bottom: 1vh;
+  }
+}
+
 #app {
   width: 100%;
   text-align: center;
