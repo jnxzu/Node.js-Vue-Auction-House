@@ -48,6 +48,13 @@ router
   .all(rejectMethod);
 
 router
+  .route("/history")
+  .get((req, res) => {
+    res.sendFile(path.join(__dirname, "../public", "history.html"));
+  })
+  .all(rejectMethod);
+
+router
   .route("/login")
   .get((req, res) => {
     res.sendFile(path.join(__dirname, "../public", "login.html"));
@@ -70,7 +77,17 @@ router
 router
   .route("/logout")
   .get((req, res) => {
+    req.logout();
     res.redirect("/login");
+  })
+  .all(rejectMethod);
+
+router
+  .route("/auth")
+  .post((req, res) => {
+    if (req.isAuthenticated())
+      res.send({ authenticated: true, username: req.user.username });
+    else res.send({ authenticated: false, username: "Guest" });
   })
   .all(rejectMethod);
 

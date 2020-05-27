@@ -1,28 +1,47 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="@/assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <div id="index-options-container">
+      <div id="index-options">
+        <IndexOption Option="Dashboard" Dest="dashboard" v-if="authenticated" />
+        <IndexOption Option="Listings" Dest="listings" />
+        <IndexOption Option="History" Dest="history" v-if="authenticated" />
+        <IndexOption Option="List" Dest="list" v-if="authenticated" />
+        <IndexOption Option="Chat" Dest="chat" v-if="authenticated" />
+        <IndexOption Option="Logout" Dest="logout" v-if="authenticated" />
+        <IndexOption Option="Login" Dest="login" v-if="!authenticated" />
+        <IndexOption Option="Signup" Dest="signup" v-if="!authenticated" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from "@/components/HelloWorld.vue";
+import IndexOption from "@/components/IndexOption.vue";
+import axios from "axios";
 
 export default {
   name: "App",
   components: {
-    HelloWorld
+    IndexOption
+  },
+  data() {
+    return {
+      authenticated: false
+    };
+  },
+  methods: {
+    isAuthenticated: function() {
+      axios.post("http://localhost:3000/auth").then(response => {
+        this.authenticated = response.data.authenticated;
+        console.log(this.authenticated);
+      });
+    }
+  },
+  mounted() {
+    this.isAuthenticated();
   }
 };
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<style lang="scss" src="@/style/global.scss"></style>
+<style lang="scss" src="@/style/index.scss"></style>
