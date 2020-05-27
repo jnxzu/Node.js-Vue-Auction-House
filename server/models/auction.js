@@ -15,6 +15,10 @@ const auctionSchema = new Schema({
   expiry: {
     type: Date,
   },
+  fast: {
+    type: Boolean,
+  },
+  allBids: [{ type: Schema.ObjectId, ref: "User" }],
 });
 
 const uniqueValidator = require("mongoose-unique-validator");
