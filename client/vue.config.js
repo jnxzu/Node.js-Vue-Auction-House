@@ -19,5 +19,17 @@ module.exports = {
       title: "Signup",
       chunks: ["chunk-vendors", "chunk-common", "signup"],
     },
+    list: {
+      entry: "src/pages/list/main.js",
+      template: "public/index.html",
+      title: "New Listing",
+      chunks: ["chunk-vendors", "chunk-common", "list"],
+    },
+    listings: {
+      entry: "src/pages/listings/main.js",
+      template: "public/index.html",
+      title: "Listings",
+      chunks: ["chunk-vendors", "chunk-common", "listings"],
+    },
   },
 };

@@ -6,8 +6,8 @@ const auctionSchema = new Schema({
     type: Schema.ObjectId,
     ref: "User",
   },
-  item: { type: String },
-  price: { type: Number },
+  item: { type: String, unique: true, minlength: 2 },
+  price: { type: Number, min: 1 },
   topBid: {
     type: Schema.ObjectId,
     ref: "User",

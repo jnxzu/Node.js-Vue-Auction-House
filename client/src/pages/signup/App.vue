@@ -20,4 +20,4 @@ export default {
 </script>
 
 <style lang="scss" src="@/style/global.scss"></style>
-<style lang="scss" src="@/style/auth.scss"></style>
+<style lang="scss" src="@/style/forms.scss"></style>

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const path = require("path");
+const moment = require("moment");
 
 const passport = require("../config/passport");
 
@@ -20,10 +21,10 @@ router
   .all(rejectMethod);
 
 router
-  .route("/chats")
+  .route("/chat")
   .get((req, res) => {
     if (!req.isAuthenticated()) res.redirect("/");
-    else res.sendFile(path.join(__dirname, "../public", "chats.html"));
+    else res.sendFile(path.join(__dirname, "../public", "chat.html"));
   })
   .all(rejectMethod);
 
@@ -40,6 +41,41 @@ router
   .get((req, res) => {
     if (!req.isAuthenticated()) res.redirect("/");
     else res.sendFile(path.join(__dirname, "../public", "list.html"));
+  })
+  .post((req, res) => {
+    Auction.findOne({ item: req.body.item }, function (err, auction) {
+      if (err) {
+        res.send({ succes: false });
+        return null;
+      }
+
+      if (auction) {
+        res.send({ succes: false });
+        return null;
+      } else {
+        var newAuction = new Auction();
+
+        newAuction.host = req.user.id;
+        newAuction.item = req.body.item;
+        if (newAuction.item.length < 2) {
+          res.send({ succes: false });
+          return null;
+        }
+
+        newAuction.price = req.body.price;
+        if (newAuction.price < 1) {
+          res.send({ succes: false });
+          return null;
+        }
+
+        newAuction.expiry = moment().add(30, "m");
+        newAuction.finished = false;
+        newAuction.fast = req.body.quickbuy;
+
+        newAuction.save();
+        res.send({ succes: true });
+      }
+    });
   })
   .all(rejectMethod);
 
