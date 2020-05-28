@@ -3,13 +3,13 @@ const Schema = mongoose.Schema;
 
 const auctionSchema = new Schema({
   host: {
-    type: Schema.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: "User",
   },
   item: { type: String, unique: true, minlength: 2 },
   price: { type: Number, min: 1 },
   topBid: {
-    type: Schema.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: "User",
   },
   expiry: {
@@ -21,7 +21,7 @@ const auctionSchema = new Schema({
   fast: {
     type: Boolean,
   },
-  allBids: [{ type: Schema.ObjectId, ref: "User" }],
+  allBids: [{ type: Schema.Types.ObjectId, ref: "User" }],
 });
 
 const uniqueValidator = require("mongoose-unique-validator");

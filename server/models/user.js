@@ -13,6 +13,10 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  hosting: [{ type: Schema.Types.ObjectId, ref: "Auction" }],
+  topBids: [{ type: Schema.Types.ObjectId, ref: "Auction" }],
+  allBids: [{ type: Schema.Types.ObjectId, ref: "Auction" }],
+  chats: [{ type: Schema.Types.ObjectId, ref: "Chat" }],
 });
 
 const uniqueValidator = require("mongoose-unique-validator");

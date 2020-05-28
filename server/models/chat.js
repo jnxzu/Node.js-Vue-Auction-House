@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const messageSchema = new Schema({
   author: {
-    type: Schema.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: "User",
   },
   content: {
@@ -12,7 +12,7 @@ const messageSchema = new Schema({
 });
 
 const chatSchema = new Schema({
-  users: [{ type: Schema.ObjectId, ref: "User" }],
+  users: [{ type: Schema.Types.ObjectId, ref: "User" }],
   messages: [messageSchema],
 });
 
