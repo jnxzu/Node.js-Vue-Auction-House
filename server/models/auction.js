@@ -18,7 +18,7 @@ const auctionSchema = new Schema({
   finished: {
     type: Boolean,
   },
-  fast: {
+  quickbuy: {
     type: Boolean,
   },
   allBids: [{ type: Schema.Types.ObjectId, ref: "User" }],

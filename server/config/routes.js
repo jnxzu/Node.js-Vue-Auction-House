@@ -45,12 +45,12 @@ router
   .post((req, res) => {
     Auction.findOne({ item: req.body.item }, function (err, auction) {
       if (err) {
-        res.send({ succes: false });
+        res.send({ success: false });
         return null;
       }
 
       if (auction) {
-        res.send({ succes: false });
+        res.send({ success: false });
         return null;
       } else {
         var newAuction = new Auction();
@@ -58,22 +58,28 @@ router
         newAuction.host = req.user.id;
         newAuction.item = req.body.item;
         if (newAuction.item.length < 2) {
-          res.send({ succes: false });
+          res.send({ success: false });
           return null;
         }
 
         newAuction.price = req.body.price;
         if (newAuction.price < 1) {
-          res.send({ succes: false });
+          res.send({ success: false });
           return null;
         }
 
-        newAuction.expiry = moment().add(30, "m");
+        newAuction.expiry = moment().add(90, "m");
         newAuction.finished = false;
-        newAuction.fast = req.body.quickbuy;
+        newAuction.quickbuy = req.body.quickbuy;
 
-        newAuction.save();
-        res.send({ succes: true });
+        newAuction.save().then((a) => {
+          User.findByIdAndUpdate(req.user.id, {
+            $push: { hosting: a._id },
+          }).then((u) => {
+            console.log(u);
+            res.send({ success: true });
+          });
+        });
       }
     });
   })
@@ -132,8 +138,47 @@ router
   .post((req, res) => {
     if (req.isAuthenticated())
       res.send({ authenticated: true, username: req.user.username });
-    else res.send({ authenticated: false, username: "Guest" });
+    else res.send({ authenticated: false, username: "" });
   })
   .all(rejectMethod);
+
+router.route("/getListings").post((req, res) => {
+  let query = req.body;
+  Auction.find(query)
+    .populate("host")
+    .populate("topBid")
+    .lean()
+    .exec(function (err, auctions) {
+      res.send({ listings: auctions });
+    });
+});
+
+router.route("/bid").post((req, res) => {
+  let firstOperation = req.body.quickbuy
+    ? {
+        $set: { topBid: req.user.id, finished: true },
+        $push: { allBids: req.user.id },
+      }
+    : {
+        $inc: { price: 1 },
+        $set: { topBid: req.user.id },
+        $push: { allBids: req.user.id },
+      };
+
+  Auction.findOneAndUpdate({ item: req.body.item }, firstOperation).then(
+    (a) => {
+      let secondOperation = req.body.quickbuy
+        ? {
+            $push: {
+              allBids: a._id,
+              topBids: a._id,
+            },
+          }
+        : { $push: { allBids: a._id } };
+
+      User.findByIdAndUpdate(req.user.id, secondOperation);
+    }
+  );
+});
 
 module.exports = router;

@@ -3,31 +3,19 @@
     <div class="input-group">
       <label for="item">item:</label>
       <br />
-      <input
-        type="text"
-        name="item"
-        id="item"
-        placeholder="Item"
-        v-on:click="reset()"
-      />
+      <input type="text" name="item" id="item" placeholder="Item" v-on:click="reset()" />
     </div>
     <div class="input-group">
       <label for="price">price:</label>
       <br />
-      <input
-        type="number"
-        min="1"
-        name="price"
-        id="price"
-        v-on:click="reset()"
-      />
+      <input type="number" min="1" name="price" id="price" v-on:click="reset()" />
     </div>
     <div class="input-group">
       <label for="quickbuy" id="quickbuy-label">quickbuy?:</label>
       <input type="checkbox" name="quickbuy" id="quickbuy" value="quickbuy" />
     </div>
     <div class="input-group">
-      <input id="submit" type="submit" value="Signup" />
+      <input id="submit" type="submit" value="List" />
     </div>
   </form>
 </template>
@@ -38,31 +26,34 @@ import axios from "axios";
 export default {
   name: "NewListing",
   props: {
-    isSignup: Boolean,
+    isSignup: Boolean
   },
   methods: {
     reset: () => {
       document.getElementById("item").style.border = "none";
       document.getElementById("price").style.border = "none";
     },
-    listItem: (e) => {
+    listItem: e => {
       e.preventDefault();
       let auction = {
         item: e.target[0].value,
         price: e.target[1].value,
-        quickbuy: e.target[2].checked,
+        quickbuy: e.target[2].checked
       };
-      console.log(auction);
       axios
         .post("/list", auction)
-        .then((resp) => {
-          console.log(resp);
+        .then(resp => {
+          if (resp.data.success) window.location = "/";
+          else {
+            e.target[0].style.border = "1px solid red";
+            e.target[1].style.border = "1px solid red";
+          }
         })
         .catch(() => {
           e.target[0].style.border = "1px solid red";
           e.target[1].style.border = "1px solid red";
         });
-    },
-  },
+    }
+  }
 };
 </script>

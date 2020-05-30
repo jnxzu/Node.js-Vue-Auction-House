@@ -2,7 +2,7 @@
   <div id="app">
     <div id="center-container">
       <div id="center">
-        <AuthForm v-bind:isSignup="false" />
+        <AuthForm :isSignup="false" />
       </div>
     </div>
   </div>

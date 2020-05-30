@@ -3,7 +3,6 @@
     <div id="center-container">
       <div id="center">
         <Listing
-          :currentUser="currentUser"
           v-for="listing in listings"
           :key="listing.item"
           :host="listing.host.username"
@@ -11,8 +10,9 @@
           :price="listing.price"
           :expiry="listing.expiry"
           :quickbuy="listing.quickbuy"
-          :topBid="!!listing.topBid ? listing.topBid.username : false"
           :finished="listing.finished"
+          :topBid="listing.topBid.username"
+          :currentUser="currentUser"
         />
       </div>
     </div>
@@ -34,13 +34,21 @@ export default {
       currentUser: ""
     };
   },
-  mounted() {
-    axios.post("/auth").then(response => {
-      this.currentUser = response.data.username;
-    });
-    axios.post("/getListings", { finished: false }).then(response => {
-      this.listings = response.data.listings;
-    });
+  methods: {
+    getListings: function() {
+      axios.post("/getListings", {}).then(response => {
+        this.listings = response.data.listings;
+      });
+    },
+    isAuthenticated: function() {
+      axios.post("/auth").then(response => {
+        this.currentUser = response.data.username;
+      });
+    }
+  },
+  created() {
+    this.isAuthenticated();
+    this.getListings();
   }
 };
 </script>
