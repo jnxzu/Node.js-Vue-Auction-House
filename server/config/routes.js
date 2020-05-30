@@ -142,9 +142,8 @@ router
   })
   .all(rejectMethod);
 
-router.route("/getListings").post((req, res) => {
-  let query = req.body;
-  Auction.find(query)
+router.route("/allActiveListings").post((req, res) => {
+  Auction.find({ finished: false })
     .populate("host")
     .populate("topBid")
     .lean()

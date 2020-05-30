@@ -38,7 +38,7 @@ export default {
     axios.post("/auth").then(response => {
       this.currentUser = response.data.username;
     });
-    axios.post("/getListings", { finished: false }).then(response => {
+    axios.post("/allActiveListings", { finished: false }).then(response => {
       this.listings = response.data.listings;
     });
   }
