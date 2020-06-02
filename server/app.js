@@ -9,9 +9,9 @@ const app = express();
 const server = require("./config/https")(app);
 
 const io = require("socket.io")(server);
-require("./config/socket.io")(io); // socket.io config
+require("./config/socket.io")(io);
 
-const routes = require("./config/routes"); // routing config
+const routes = require("./config/routes");
 
 app.use(cors());
 app.use(cookieParser());
@@ -29,9 +29,9 @@ app.use(passport.session());
 
 app.use(routes);
 
-app.use("/js", express.static(path.join(__dirname, "public/js")));
-app.use("/css", express.static(path.join(__dirname, "public/css")));
-app.use("/img", express.static(path.join(__dirname, "public/img")));
+app.use("/js", express.static(path.join(__dirname, "public", "js")));
+app.use("/css", express.static(path.join(__dirname, "public", "css")));
+app.use("/img", express.static(path.join(__dirname, "public", "img")));
 
 const port = 3000;
 
