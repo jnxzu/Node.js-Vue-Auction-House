@@ -6,8 +6,8 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 
 const app = express();
+const server = require("./config/https")(app);
 
-const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 require("./config/socket.io")(io); // socket.io config
 
@@ -33,6 +33,8 @@ app.use("/js", express.static(path.join(__dirname, "public/js")));
 app.use("/css", express.static(path.join(__dirname, "public/css")));
 app.use("/img", express.static(path.join(__dirname, "public/img")));
 
-server.listen(3000, () => {
-  console.log("listening on http://localhost:3000");
+const port = 3000;
+
+server.listen(port, () => {
+  console.log(`Server live: https://localhost:${port}`);
 });

@@ -26,10 +26,6 @@
         font-weight: 100;
       }
     }
-    &.bought {
-      background: rgb(217, 219, 55);
-      width: 15%;
-    }
   }
   .listing-group-action {
     line-height: 10vh;
@@ -37,17 +33,25 @@
     cursor: pointer;
     font-weight: 700;
     &.buy {
-      background: rgb(224, 47, 224);
+      background: rgb(255, 10, 10);
     }
     &.bid {
-      background: rgb(62, 137, 199);
+      background: rgb(255, 129, 26);
     }
     &.ended {
-      background: rgb(145, 147, 148);
+      background: rgb(150, 150, 150);
       cursor: default;
     }
     &.owner {
-      background: rgb(79, 196, 127);
+      background: rgb(99, 255, 164);
+      cursor: default;
+    }
+    &.sold {
+      background: rgb(255, 252, 83);
+      cursor: default;
+    }
+    &.bought {
+      background: rgb(59, 216, 255);
       cursor: default;
     }
   }

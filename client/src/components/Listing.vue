@@ -24,16 +24,19 @@
       <div class="listing-group-top" v-else>expired:</div>
       <div class="listing-group-bot">{{ timeFrom }}</div>
     </div>
-    <div class="listing-group-action ended" v-if="finished">ENDED</div>
-    <div class="listing-group-action owner" v-else-if="owner">OWNER</div>
+
+    <div class="listing-group-action sold" v-if="finished && host===currentUser && topBid">SOLD</div>
+    <div class="listing-group-action bought" v-else-if="finished && topBid===currentUser">BOUGHT</div>
+    <div class="listing-group-action ended" v-else-if="finished && host===currentUser">EXPIRED</div>
+    <div class="listing-group-action owner" v-else-if="!finished && host===currentUser">OWNER</div>
     <div
       class="listing-group-action buy"
-      v-else-if="quickbuy && !finished"
+      v-else-if="quickbuy && !finished && host!==currentUser"
       v-on:click="bidOrBuy()"
     >BUY</div>
     <div
       class="listing-group-action bid"
-      v-else-if="!quickbuy && !finished"
+      v-else-if="!quickbuy && !finished && host!==currentUser"
       v-on:click="bidOrBuy()"
     >BID</div>
   </div>
@@ -57,7 +60,6 @@ export default {
   data() {
     return {
       timeFrom: moment(this.$props.expiry).fromNow(),
-      owner: this.$props.currentUser === this.$props.host,
       finished: moment(this.$props.expiry).isBefore(moment())
     };
   },
