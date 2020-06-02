@@ -48,30 +48,25 @@ router
         res.send({ success: false });
         return null;
       }
-
       if (auction) {
         res.send({ success: false });
         return null;
       } else {
         var newAuction = new Auction();
-
         newAuction.host = req.user.id;
         newAuction.item = req.body.item;
         if (newAuction.item.length < 2) {
           res.send({ success: false });
           return null;
         }
-
         newAuction.price = req.body.price;
         if (newAuction.price < 1) {
           res.send({ success: false });
           return null;
         }
-
         newAuction.expiry = moment().add(90, "m");
         newAuction.finished = false;
         newAuction.quickbuy = req.body.quickbuy;
-
         newAuction.save().then((a) => {
           User.findByIdAndUpdate(req.user.id, {
             $push: { hosting: a._id },
@@ -142,8 +137,32 @@ router
   })
   .all(rejectMethod);
 
-router.route("/allActiveListings").post((req, res) => {
-  Auction.find({ finished: false })
+router.route("/getListings").post((req, res) => {
+  let query = {};
+  switch (req.body.query) {
+    case "listings":
+      query = { expiry: { $gte: new Date() } };
+      break;
+
+    case "history":
+      query = {
+        $and: [
+          { expiry: { $lte: new Date() } },
+          { $or: [{ topBid: req.user.id }, { host: req.user.id }] },
+        ],
+      };
+      break;
+
+    case "dash":
+      query = {
+        $and: [{ expiry: { $gte: new Date() } }, { allBids: req.user.id }],
+      };
+      break;
+
+    default:
+      break;
+  }
+  Auction.find(query)
     .populate("host")
     .populate("topBid")
     .lean()

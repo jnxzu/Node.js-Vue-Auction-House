@@ -31,5 +31,17 @@ module.exports = {
       title: "Listings",
       chunks: ["chunk-vendors", "chunk-common", "listings"],
     },
+    history: {
+      entry: "src/pages/history/main.js",
+      template: "public/index.html",
+      title: "History",
+      chunks: ["chunk-vendors", "chunk-common", "history"],
+    },
+    dashboard: {
+      entry: "src/pages/dashboard/main.js",
+      template: "public/index.html",
+      title: "Dashboard",
+      chunks: ["chunk-vendors", "chunk-common", "dashboard"],
+    },
   },
 };

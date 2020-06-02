@@ -12,7 +12,6 @@
           :expiry="listing.expiry"
           :quickbuy="listing.quickbuy"
           :topBid="!!listing.topBid ? listing.topBid.username : false"
-          :finished="listing.finished"
         />
       </div>
     </div>
@@ -37,6 +36,9 @@ export default {
   mounted() {
     axios.post("/auth").then(response => {
       this.currentUser = response.data.username;
+    });
+    axios.post("/getListings", { query: "history" }).then(response => {
+      this.listings = response.data.listings;
     });
   }
 };

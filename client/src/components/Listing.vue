@@ -52,13 +52,13 @@ export default {
     expiry: String,
     quickbuy: Boolean,
     currentUser: String,
-    topBid: String,
-    finished: Boolean
+    topBid: String
   },
   data() {
     return {
       timeFrom: moment(this.$props.expiry).fromNow(),
-      owner: this.$props.currentUser === this.$props.host
+      owner: this.$props.currentUser === this.$props.host,
+      finished: moment(this.$props.expiry).isBefore(moment())
     };
   },
   methods: {
@@ -75,8 +75,8 @@ export default {
     }
   },
   created() {
-    console.log(this.$props.topBid);
     setInterval(() => {
+      this.finished = moment(this.$props.expiry).isBefore(moment());
       this.timeFrom = moment(this.$props.expiry).fromNow();
     }, 1000 * 30);
   },
