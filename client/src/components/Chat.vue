@@ -11,11 +11,11 @@
     </div>
     <div id="chat">
       <div id="messages">
-        <div class="message">
-          <div class="content my">policje</div>
-        </div>
-        <div class="message">
-          <div class="content his">nalezy pierdolic wiadomo</div>
+        <div class="message" v-for="(msg, index) in messages" :key="index">
+          <div
+            class="content"
+            :class="{my: msg.author.username===currentUser, his: msg.author.username!==currentUser}"
+          >{{ msg.content }}</div>
         </div>
       </div>
       <div id="sender">
@@ -51,14 +51,18 @@ export default {
           target: this.selectedUser
         })
         .then(response => {
-          this.messages = response.messages;
+          this.messages = response.data.messages;
         });
     },
     sendMessage: function() {
       var msgInput = document.getElementById("sender-input");
       var msg = msgInput.value;
       if (msg) {
-        axios.post("/sendMsg", { target: this.selectedUser, content: msg });
+        axios
+          .post("/sendMsg", { target: this.selectedUser, content: msg })
+          .then(() => {
+            msgInput.value = "";
+          });
       } else {
         msgInput.style.border = "1px solid red";
       }
@@ -78,7 +82,7 @@ export default {
             target: this.selectedUser
           })
           .then(response => {
-            this.messages = response.messages;
+            this.messages = response.data.messages;
           });
       });
     });

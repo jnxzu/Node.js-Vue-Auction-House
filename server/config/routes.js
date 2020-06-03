@@ -126,6 +126,11 @@ router
   .get((req, res) => {
     if (!req.isAuthenticated()) res.redirect("/");
     else {
+      console.log(
+        `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
+          req.user.username
+        } logged out.`
+      );
       req.logout();
       res.redirect("/");
     }
@@ -226,8 +231,9 @@ router
 
 router.route("/getMessages").post((req, res) => {
   User.findOne({ username: req.body.target }).then((messageTarget) => {
-    Chat.findOne({ users: { $all: [req.user.id, messageTarget._id] } }).then(
-      (chat) => {
+    Chat.findOne({ users: { $all: [req.user.id, messageTarget._id] } })
+      .populate("messages.author")
+      .then((chat) => {
         if (chat) res.send({ messages: chat.messages });
         else {
           var newChat = new Chat();
@@ -243,8 +249,7 @@ router.route("/getMessages").post((req, res) => {
             });
           });
         }
-      }
-    );
+      });
   });
 });
 
