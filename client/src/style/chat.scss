@@ -57,6 +57,8 @@
           width: fit-content;
           padding: 1vmin;
           border-radius: 7px;
+          max-width: 50%;
+          word-break: break-all;
           &.my {
             float: left;
             background: rgb(253, 255, 119);

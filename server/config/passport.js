@@ -1,5 +1,6 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
+const moment = require("moment");
 
 const User = require("../models/user");
 
@@ -18,6 +19,11 @@ passport.use(
 
         newUser.save(function (err) {
           if (err) throw err;
+          console.log(
+            `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
+              newUser.username
+            } registered.`
+          );
           return done(null, newUser);
         });
       }
@@ -37,6 +43,11 @@ passport.use(
 
       if (!user.validPassword(password)) return done(null, false);
 
+      console.log(
+        `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
+          user.username
+        } logged in.`
+      );
       return done(null, user);
     });
   })

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const moment = require("moment");
 
 mongoose.set("useFindAndModify", false);
 
@@ -18,7 +19,11 @@ mongoose.set("useFindAndModify", false);
 const db = mongoose.connection;
 
 db.on("open", () => {
-  console.log("Database connection established.");
+  console.log(
+    `${moment().format(
+      "MMMM Do YYYY, h:mm:ss a"
+    )} - Database connection established.`
+  );
 });
 
 db.on("error", console.error.bind(console, "MongoDB error: "));

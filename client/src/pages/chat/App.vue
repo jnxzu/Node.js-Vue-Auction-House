@@ -9,29 +9,13 @@
 </template>
 
 <script>
-import axios from "axios";
 import Chat from "@/components/Chat.vue";
 
 export default {
   name: "Index",
   components: {
-    Chat,
-  },
-  data() {
-    return {
-      authenticated: false,
-    };
-  },
-  methods: {
-    isAuthenticated: function() {
-      axios.post("/auth").then((response) => {
-        this.authenticated = response.data.authenticated;
-      });
-    },
-  },
-  mounted() {
-    this.isAuthenticated();
-  },
+    Chat
+  }
 };
 </script>
 

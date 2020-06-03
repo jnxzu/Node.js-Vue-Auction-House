@@ -70,8 +70,12 @@ router
         newAuction.save().then((a) => {
           User.findByIdAndUpdate(req.user.id, {
             $push: { hosting: a._id },
-          }).then((u) => {
-            console.log(u);
+          }).then(() => {
+            console.log(
+              `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
+                newAuction.item
+              } listed by ${newAuction.host} for ${newAuction.price}.`
+            );
             res.send({ success: true });
           });
         });
@@ -165,8 +169,7 @@ router.route("/getListings").post((req, res) => {
   Auction.find(query)
     .populate("host")
     .populate("topBid")
-    .lean()
-    .exec(function (err, auctions) {
+    .then((auctions) => {
       res.send({ listings: auctions });
     });
 });
@@ -194,9 +197,80 @@ router.route("/bid").post((req, res) => {
           }
         : { $push: { allBids: a._id } };
 
-      User.findByIdAndUpdate(req.user.id, secondOperation);
+      User.findByIdAndUpdate(req.user.id, secondOperation).then(() => {
+        if (req.body.quickbuy)
+          console.log(
+            `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
+              req.user.username
+            } bought ${a.item} for ${a.price}.`
+          );
+        else
+          console.log(
+            `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
+              req.user.username
+            } bid ${a.price} for ${a.item}.`
+          );
+      });
     }
   );
 });
+
+router
+  .route("/getUsers")
+  .post((req, res) => {
+    User.find({ username: { $ne: req.body.excluded } }).then((users) => {
+      res.send({ users: users });
+    });
+  })
+  .all(rejectMethod);
+
+router.route("/getMessages").post((req, res) => {
+  User.findOne({ username: req.body.target }).then((messageTarget) => {
+    Chat.findOne({ users: { $all: [req.user.id, messageTarget._id] } }).then(
+      (chat) => {
+        if (chat) res.send({ messages: chat.messages });
+        else {
+          var newChat = new Chat();
+          newChat.users = [req.user.id, messageTarget._id];
+          newChat.messages = [];
+          newChat.save().then((newC) => {
+            messageTarget.chats.push(newC._id);
+            messageTarget.save().then(() => {
+              User.findOneAndUpdate(
+                { username: req.user.username },
+                { $push: { chats: newC._id } }
+              ).then(res.send({ messages: newC.messages }));
+            });
+          });
+        }
+      }
+    );
+  });
+});
+
+router
+  .route("/sendMsg")
+  .post((req, res) => {
+    let msg = {
+      author: req.user.id,
+      content: req.body.content,
+      date: moment(),
+    };
+    User.findOne({ username: req.body.target }).then((messageTarget) => {
+      Chat.findOneAndUpdate(
+        {
+          users: { $all: [req.user.id, messageTarget._id] },
+        },
+        { $push: { messages: msg } }
+      ).then(() => {
+        console.log(
+          `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
+            req.user.username
+          } sent "${msg.content}" to ${messageTarget.username}.`
+        );
+      });
+    });
+  })
+  .all(rejectMethod);
 
 module.exports = router;

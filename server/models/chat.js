@@ -9,6 +9,9 @@ const messageSchema = new Schema({
   content: {
     type: String,
   },
+  date: {
+    type: Date,
+  },
 });
 
 const chatSchema = new Schema({

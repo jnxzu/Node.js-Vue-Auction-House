@@ -4,6 +4,7 @@ const cors = require("cors");
 const passport = require("passport");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
+const moment = require("moment");
 
 const app = express();
 const server = require("./config/https")(app);
@@ -36,5 +37,9 @@ app.use("/img", express.static(path.join(__dirname, "public", "img")));
 const port = 3000;
 
 server.listen(port, () => {
-  console.log(`Server live: https://localhost:${port}`);
+  console.log(
+    `${moment().format(
+      "MMMM Do YYYY, h:mm:ss a"
+    )} - Server live: https://localhost:${port}.`
+  );
 });
