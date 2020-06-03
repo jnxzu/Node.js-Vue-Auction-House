@@ -1,0 +1,103 @@
+#chat-container {
+  margin-top: 2vh;
+  width: 60vw;
+  height: 70vh;
+  padding: 2vmin;
+  box-shadow: 0px 6px 5px 0px rgba(0, 0, 0, 0.75),
+    0px -1px 3px 0px rgba(0, 0, 0, 0.75);
+  display: flex;
+  flex-direction: column;
+  #users {
+    width: 100%;
+    padding: 1vmin;
+    display: flex;
+    flex-wrap: wrap;
+    .user {
+      margin: 0 1vmin 1vmin 0;
+      box-shadow: 0px 6px 5px 0px rgba(0, 0, 0, 0.75),
+        0px -1px 3px 0px rgba(0, 0, 0, 0.75);
+      border-radius: 15px;
+      height: 3vh;
+      line-height: 3vh;
+      padding: 1vmin 2vmin;
+      font-weight: 700;
+      width: fit-content;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      &:hover {
+        letter-spacing: 2px;
+      }
+      &.selected {
+        background: rgb(255, 214, 139);
+      }
+    }
+  }
+  #chat {
+    margin-top: 1vmin;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex-grow: 1;
+    box-shadow: 0px 6px 5px 0px rgba(0, 0, 0, 0.75),
+      0px -1px 3px 0px rgba(0, 0, 0, 0.75);
+    overflow: hidden;
+    #messages {
+      flex-grow: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 1vmin;
+      box-sizing: border-box;
+      overflow: auto;
+      .message {
+        width: 100%;
+        height: 10%;
+        padding-bottom: 1vmin;
+        .content {
+          width: fit-content;
+          padding: 1vmin;
+          border-radius: 7px;
+          &.my {
+            float: left;
+            background: rgb(253, 255, 119);
+          }
+          &.his {
+            float: right;
+            background: rgb(115, 115, 255);
+          }
+        }
+      }
+    }
+    #sender {
+      height: 10%;
+      width: 100%;
+      border-top: 1px solid black;
+      background: rgb(200, 255, 128);
+      display: flex;
+      align-items: center;
+      input {
+        margin: 0 2vmin;
+        border: none;
+        flex-grow: 1;
+        border-radius: 10px;
+        box-shadow: 1px 4px 5px 0px rgba(0, 0, 0, 0.75);
+        height: 50%;
+        padding-left: 1vmin;
+      }
+      button {
+        height: 60%;
+        width: 10%;
+        border: none;
+        border-radius: 10px;
+        box-shadow: 1px 4px 5px 0px rgba(0, 0, 0, 0.75);
+        font-weight: 700;
+        cursor: pointer;
+        margin: 0 2vmin;
+        transition: all 0.3s ease;
+        &:hover {
+          letter-spacing: 2px;
+        }
+      }
+    }
+  }
+}

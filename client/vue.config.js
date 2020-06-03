@@ -43,5 +43,11 @@ module.exports = {
       title: "Dashboard",
       chunks: ["chunk-vendors", "chunk-common", "dashboard"],
     },
+    chat: {
+      entry: "src/pages/chat/main.js",
+      template: "public/index.html",
+      title: "Chat",
+      chunks: ["chunk-vendors", "chunk-common", "chat"],
+    },
   },
 };

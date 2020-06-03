@@ -22,23 +22,18 @@ import axios from "axios";
 export default {
   name: "Index",
   components: {
-    IndexOption,
+    IndexOption
   },
   data() {
     return {
-      authenticated: false,
+      authenticated: false
     };
   },
-  methods: {
-    isAuthenticated: function() {
-      axios.post("/auth").then((response) => {
-        this.authenticated = response.data.authenticated;
-      });
-    },
-  },
   mounted() {
-    this.isAuthenticated();
-  },
+    axios.post("/auth").then(response => {
+      this.authenticated = response.data.authenticated;
+    });
+  }
 };
 </script>
 
