@@ -305,6 +305,7 @@ module.exports = (io) => {
               req.user.username
             } sent "${msg.content}" to ${messageTarget.username}.`
           );
+          res.send({ clear: "" });
           io.sockets.emit("updateMessages");
         });
       });

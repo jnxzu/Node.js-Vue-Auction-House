@@ -70,8 +70,8 @@ export default {
       if (msg) {
         axios
           .post("/sendMsg", { target: this.selectedUser, content: msg })
-          .then(() => {
-            msgInput.value = "";
+          .then((response) => {
+            msgInput.value = response.data.clear;
           });
       } else {
         msgInput.style.border = "1px solid red";
