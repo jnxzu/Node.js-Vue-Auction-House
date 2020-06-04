@@ -12,7 +12,7 @@ const server = require("./config/https")(app);
 const io = require("socket.io")(server);
 require("./config/socket.io")(io);
 
-const routes = require("./config/routes");
+const routes = require("./config/routes")(io);
 
 app.use(cors());
 app.use(cookieParser());

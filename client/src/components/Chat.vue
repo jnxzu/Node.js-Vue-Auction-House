@@ -5,17 +5,24 @@
         v-for="user in users"
         :key="user.username"
         class="user"
-        :class="{selected: user.username===selectedUser}"
+        :class="{ selected: user.username === selectedUser }"
         v-on:click="seeChat"
-      >{{ user.username }}</div>
+      >
+        {{ user.username }}
+      </div>
     </div>
     <div id="chat">
       <div id="messages">
         <div class="message" v-for="(msg, index) in messages" :key="index">
           <div
             class="content"
-            :class="{my: msg.author.username===currentUser, his: msg.author.username!==currentUser}"
-          >{{ msg.content }}</div>
+            :class="{
+              my: msg.author.username === currentUser,
+              his: msg.author.username !== currentUser,
+            }"
+          >
+            {{ msg.content }}
+          </div>
         </div>
       </div>
       <div id="sender">
@@ -28,6 +35,9 @@
 
 <script>
 import axios from "axios";
+import io from "socket.io-client";
+
+var socket = io();
 
 export default {
   name: "Chat",
@@ -36,7 +46,7 @@ export default {
       currentUser: "",
       users: [],
       selectedUser: "",
-      messages: []
+      messages: [],
     };
   },
   methods: {
@@ -48,9 +58,9 @@ export default {
       this.selectedUser = event.target.innerText;
       axios
         .post("/getMessages", {
-          target: this.selectedUser
+          target: this.selectedUser,
         })
-        .then(response => {
+        .then((response) => {
           this.messages = response.data.messages;
         });
     },
@@ -69,26 +79,46 @@ export default {
     },
     reset: () => {
       document.getElementById("sender-input").style.border = "none";
-    }
+    },
   },
   beforeCreate() {
-    axios.post("/auth").then(response => {
+    axios.post("/auth").then((response) => {
       this.currentUser = response.data.username;
-      axios.post("/getUsers", { excluded: this.currentUser }).then(response => {
-        this.users = response.data.users;
-        this.selectedUser = this.users[0].username;
-        axios
-          .post("/getMessages", {
-            target: this.selectedUser
-          })
-          .then(response => {
-            this.messages = response.data.messages;
-          });
-      });
+      axios
+        .post("/getUsers", { excluded: this.currentUser })
+        .then((response) => {
+          this.users = response.data.users;
+          this.selectedUser = this.users[0].username;
+          axios
+            .post("/getMessages", {
+              target: this.selectedUser,
+            })
+            .then((response) => {
+              this.messages = response.data.messages;
+            });
+        });
+    });
+  },
+  created() {
+    socket.on("updateUsers", () => {
+      axios
+        .post("/getUsers", { excluded: this.currentUser })
+        .then((response) => {
+          this.users = response.data.users;
+        });
+    });
+    socket.on("updateMessages", () => {
+      axios
+        .post("/getMessages", {
+          target: this.selectedUser,
+        })
+        .then((response) => {
+          this.messages = response.data.messages;
+        });
     });
   },
   mounted() {
     this.scrollChat();
-  }
+  },
 };
 </script>

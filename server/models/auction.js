@@ -15,6 +15,9 @@ const auctionSchema = new Schema({
   expiry: {
     type: Date,
   },
+  finished: {
+    type: Boolean,
+  },
   quickbuy: {
     type: Boolean,
   },

@@ -11,6 +11,7 @@
           :price="listing.price"
           :expiry="listing.expiry"
           :quickbuy="listing.quickbuy"
+          :finished="listing.finished"
           :topBid="!!listing.topBid ? listing.topBid.username : false"
         />
       </div>
@@ -21,26 +22,36 @@
 <script>
 import axios from "axios";
 import Listing from "@/components/Listing.vue";
+import io from "socket.io-client";
+
+var socket = io();
 
 export default {
   name: "Index",
   components: {
-    Listing
+    Listing,
   },
   data() {
     return {
       listings: [],
-      currentUser: ""
+      currentUser: "",
     };
   },
+  created() {
+    socket.on("updateListings", () => {
+      axios.post("/getListings", { query: "dash" }).then((response) => {
+        this.listings = response.data.listings;
+      });
+    });
+  },
   mounted() {
-    axios.post("/auth").then(response => {
+    axios.post("/auth").then((response) => {
       this.currentUser = response.data.username;
     });
-    axios.post("/getListings", { query: "dash" }).then(response => {
+    axios.post("/getListings", { query: "dash" }).then((response) => {
       this.listings = response.data.listings;
     });
-  }
+  },
 };
 </script>
 

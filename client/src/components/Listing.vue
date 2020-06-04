@@ -14,21 +14,22 @@
       <div class="listing-group-bot">{{ price }}</div>
     </div>
     <div class="listing-group">
-      <div class="listing-group-top" v-if="!finished">top bidder:</div>
+      <div class="listing-group-top" v-if="!timeOut">top bidder:</div>
       <div class="listing-group-top" v-else>bought by:</div>
       <div class="listing-group-bot" v-if="topBid">{{ topBid }}</div>
       <div class="listing-group-bot cursive" v-else>nobody</div>
     </div>
     <div class="listing-group">
-      <div class="listing-group-top" v-if="!finished">expires:</div>
-      <div class="listing-group-top" v-else>expired:</div>
+      <div class="listing-group-top" v-if="quickbuy && finished">was bought:</div>
+      <div class="listing-group-top" v-else-if="!timeOut">expires:</div>
+      <div class="listing-group-top" v-else-if="timeOut">expired:</div>
       <div class="listing-group-bot">{{ timeFrom }}</div>
     </div>
 
     <div class="listing-group-action sold" v-if="finished && host===currentUser && topBid">SOLD</div>
     <div class="listing-group-action bought" v-else-if="finished && topBid===currentUser">BOUGHT</div>
-    <div class="listing-group-action ended" v-else-if="finished && host===currentUser">EXPIRED</div>
-    <div class="listing-group-action owner" v-else-if="!finished && host===currentUser">OWNER</div>
+    <div class="listing-group-action ended" v-else-if="timeOut && host===currentUser">EXPIRED</div>
+    <div class="listing-group-action owner" v-else-if="!timeOut && host===currentUser">OWNER</div>
     <div
       class="listing-group-action buy"
       v-else-if="quickbuy && !finished && host!==currentUser"
@@ -55,12 +56,13 @@ export default {
     expiry: String,
     quickbuy: Boolean,
     currentUser: String,
-    topBid: String
+    topBid: String,
+    finished: Boolean
   },
   data() {
     return {
       timeFrom: moment(this.$props.expiry).fromNow(),
-      finished: moment(this.$props.expiry).isBefore(moment())
+      timeOut: moment(this.$props.expiry).isBefore(moment())
     };
   },
   methods: {
@@ -78,7 +80,12 @@ export default {
   },
   created() {
     setInterval(() => {
-      this.finished = moment(this.$props.expiry).isBefore(moment());
+      this.timeOut = moment(this.$props.expiry).isBefore(moment());
+      if (this.timeOut && !this.$props.quickbuy && !this.$props.finished) {
+        axios.post("/timeOutAuction", { item: this.$props.item }).then(() => {
+          this.$props.finished = true;
+        });
+      }
       this.timeFrom = moment(this.$props.expiry).fromNow();
     }, 1000 * 30);
   },

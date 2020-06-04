@@ -32,11 +32,18 @@
     width: 15%;
     cursor: pointer;
     font-weight: 700;
+    transition: all 0.3s ease;
     &.buy {
       background: rgb(255, 10, 10);
+      &:hover {
+        letter-spacing: 2px;
+      }
     }
     &.bid {
       background: rgb(255, 129, 26);
+      &:hover {
+        letter-spacing: 2px;
+      }
     }
     &.ended {
       background: rgb(150, 150, 150);

@@ -14,8 +14,8 @@ import Chat from "@/components/Chat.vue";
 export default {
   name: "Index",
   components: {
-    Chat
-  }
+    Chat,
+  },
 };
 </script>
 
