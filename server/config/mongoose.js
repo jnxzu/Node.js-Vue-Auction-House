@@ -5,14 +5,11 @@ mongoose.set("useFindAndModify", false);
 
 (async () => {
   try {
-    await mongoose.connect(
-      "mongodb://janekcbdnew:n5OlUCasVClSmaDZbpi3LUBSNGXcL2EO91aYfusmpj2mIzIBTrNKJdQC0t4qoSFvGsAylcF6IQmvXyErutumXA==@janekcbdnew.documents.azure.com:10255/mean?ssl=true&sslverifycertificate=false",
-      {
-        useUnifiedTopology: true,
-        useNewUrlParser: true,
-        useCreateIndex: true,
-      }
-    );
+    await mongoose.connect("mongodb://localhost/auctionhouse", {
+      useUnifiedTopology: true,
+      useNewUrlParser: true,
+      useCreateIndex: true,
+    });
   } catch (err) {
     console.error(err);
     process.exit(1);
