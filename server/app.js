@@ -37,9 +37,5 @@ app.use("/img", express.static(path.join(__dirname, "public", "img")));
 const port = process.env.PORT || 3000;
 
 server.listen(port, () => {
-  console.log(
-    `${moment().format(
-      "MMMM Do YYYY, h:mm:ss a"
-    )} - Server live: https://localhost:${port}.`
-  );
+  console.log(`${moment().format("MMMM Do YYYY, h:mm:ss a")} - Server live.`);
 });
