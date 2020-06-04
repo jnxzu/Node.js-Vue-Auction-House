@@ -6,7 +6,7 @@ mongoose.set("useFindAndModify", false);
 (async () => {
   try {
     await mongoose.connect(
-      "mongodb://janekcbdnew:n5OlUCasVClSmaDZbpi3LUBSNGXcL2EO91aYfusmpj2mIzIBTrNKJdQC0t4qoSFvGsAylcF6IQmvXyErutumXA==@janekcbdnew.documents.azure.com:10255/mean-dev?ssl=true&sslverifycertificate=false",
+      "mongodb://janekcbdnew:n5OlUCasVClSmaDZbpi3LUBSNGXcL2EO91aYfusmpj2mIzIBTrNKJdQC0t4qoSFvGsAylcF6IQmvXyErutumXA==@janekcbdnew.documents.azure.com:10255/mean?ssl=true&sslverifycertificate=false",
       {
         useUnifiedTopology: true,
         useNewUrlParser: true,
