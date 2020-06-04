@@ -14,6 +14,7 @@
           :finished="listing.finished"
           :topBid="!!listing.topBid ? listing.topBid.username : false"
         />
+        <div v-if="!listings.length" class="nope">sorry, nothing here</div>
       </div>
     </div>
   </div>
@@ -29,29 +30,29 @@ var socket = io();
 export default {
   name: "Index",
   components: {
-    Listing,
+    Listing
   },
   data() {
     return {
       listings: [],
-      currentUser: "",
+      currentUser: ""
     };
   },
   created() {
     socket.on("updateListings", () => {
-      axios.post("/getListings", { query: "dash" }).then((response) => {
+      axios.post("/getListings", { query: "dash" }).then(response => {
         this.listings = response.data.listings;
       });
     });
   },
   mounted() {
-    axios.post("/auth").then((response) => {
+    axios.post("/auth").then(response => {
       this.currentUser = response.data.username;
     });
-    axios.post("/getListings", { query: "dash" }).then((response) => {
+    axios.post("/getListings", { query: "dash" }).then(response => {
       this.listings = response.data.listings;
     });
-  },
+  }
 };
 </script>
 

@@ -22,15 +22,10 @@ export default {
       submitter: ""
     };
   },
-  methods: {
-    getUsername: function() {
-      axios.post("/auth").then(response => {
-        this.submitter = response.data.username;
-      });
-    }
-  },
   mounted() {
-    this.getUsername();
+    axios.post("/auth").then(response => {
+      this.submitter = response.data.username;
+    });
   }
 };
 </script>

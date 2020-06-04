@@ -34,6 +34,7 @@ a {
   display: inline-block;
   margin: 0 auto;
 }
+
 #center {
   display: flex;
   flex-direction: column;
@@ -42,4 +43,9 @@ a {
 #app {
   width: 100%;
   text-align: center;
+}
+
+.nope {
+  margin-top: 30vh;
+  font-size: xx-large;
 }

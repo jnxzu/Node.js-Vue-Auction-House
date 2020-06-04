@@ -14,6 +14,7 @@
           :finished="listing.finished"
           :topBid="!!listing.topBid ? listing.topBid.username : false"
         />
+        <div v-if="!listings.length" class="nope">sorry, nothing here</div>
       </div>
     </div>
   </div>
@@ -26,22 +27,22 @@ import Listing from "@/components/Listing.vue";
 export default {
   name: "Index",
   components: {
-    Listing,
+    Listing
   },
   data() {
     return {
       listings: [],
-      currentUser: "",
+      currentUser: ""
     };
   },
   mounted() {
-    axios.post("/auth").then((response) => {
+    axios.post("/auth").then(response => {
       this.currentUser = response.data.username;
     });
-    axios.post("/getListings", { query: "history" }).then((response) => {
+    axios.post("/getListings", { query: "history" }).then(response => {
       this.listings = response.data.listings;
     });
-  },
+  }
 };
 </script>
 

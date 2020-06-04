@@ -13,7 +13,6 @@ export default {
   },
   methods: {
     myRedirect: function() {
-      console.log("test");
       window.location.href = this.$props.Dest;
     }
   }
