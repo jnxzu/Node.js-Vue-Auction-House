@@ -34,7 +34,7 @@ app.use("/js", express.static(path.join(__dirname, "public", "js")));
 app.use("/css", express.static(path.join(__dirname, "public", "css")));
 app.use("/img", express.static(path.join(__dirname, "public", "img")));
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 server.listen(port, () => {
   console.log(
