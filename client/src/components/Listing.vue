@@ -78,6 +78,14 @@ export default {
       });
     }
   },
+  beforeCreate() {
+    this.timeOut = moment(this.$props.expiry).isBefore(moment());
+    if (this.timeOut && !this.$props.quickbuy && !this.$props.finished) {
+      axios.post("/timeOutAuction", { item: this.$props.item }).then(() => {
+        this.$props.finished = true;
+      });
+    }
+  },
   created() {
     setInterval(() => {
       this.timeOut = moment(this.$props.expiry).isBefore(moment());
