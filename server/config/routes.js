@@ -76,7 +76,7 @@ module.exports = (io) => {
               console.log(
                 `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
                   newAuction.item
-                } listed by ${newAuction.host} for ${newAuction.price}.`
+                } listed by ${req.user.username} for ${newAuction.price}.`
               );
               io.sockets.emit("updateListings");
               res.send({ success: true });
@@ -342,6 +342,7 @@ module.exports = (io) => {
                 a.item
               }" expired.`
             );
+          io.sockets.emit("updateListings");
         });
     })
     .all(rejectMethod);
