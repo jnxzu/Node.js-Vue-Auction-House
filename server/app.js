@@ -8,6 +8,7 @@ const moment = require("moment");
 
 const app = express();
 // const server = require("./config/https")(app);
+const server = require("http").createServer(app);
 
 const io = require("socket.io")(server);
 require("./config/socket.io")(io);
@@ -40,6 +41,6 @@ const port = process.env.PORT || 3000;
 //   console.log(`${moment().format("MMMM Do YYYY, h:mm:ss a")} - Server live. https://localhost:${port}`);
 // });
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`${moment().format("MMMM Do YYYY, h:mm:ss a")} - Server live.`);
 });
