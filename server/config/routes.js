@@ -323,8 +323,8 @@ module.exports = (io) => {
       )
         .populate("topBid")
         .then((a) => {
+          // if it had a bid award the auction to top bidder
           if (a.topBid)
-            // if it had a bid award the auction to top bidder
             User.findOneAndUpdate(
               { username: a.topBid.username },
               { $push: { topBids: a._id } }
@@ -336,6 +336,12 @@ module.exports = (io) => {
               );
               io.sockets.emit("updateListings");
             });
+          else
+            console.log(
+              `${moment().format("MMMM Do YYYY, h:mm:ss a")} - Auction for "${
+                a.item
+              }" expired.`
+            );
         });
     })
     .all(rejectMethod);
