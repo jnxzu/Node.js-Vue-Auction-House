@@ -34,12 +34,6 @@ app.use("/js", express.static(path.join(__dirname, "public", "js")));
 app.use("/css", express.static(path.join(__dirname, "public", "css")));
 app.use("/img", express.static(path.join(__dirname, "public", "img")));
 
-const port = 3000;
-
-server.listen(port, () => {
-  console.log(
-    `${moment().format(
-      "MMMM Do YYYY, h:mm:ss a"
-    )} - Server live: https://localhost:${port}.`
-  );
+server.listen(() => {
+  console.log(`${moment().format("MMMM Do YYYY, h:mm:ss a")} - Server live.`);
 });
