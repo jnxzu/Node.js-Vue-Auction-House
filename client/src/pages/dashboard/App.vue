@@ -23,19 +23,19 @@
 <script>
 import axios from "axios";
 import Listing from "@/components/Listing.vue";
-// import io from "socket.io-client";
+import io from "socket.io-client";
 
-// var socket = io();
+var socket = io();
 
 export default {
   name: "Index",
   components: {
-    Listing
+    Listing,
   },
   data() {
     return {
       listings: [],
-      currentUser: ""
+      currentUser: "",
     };
   },
   // created() {
@@ -45,14 +45,21 @@ export default {
   //     });
   //   });
   // },
+  created() {
+    socket.on("outBid", (oldLead, item, newLead) => {
+      if (this.currentUser === oldLead) {
+        alert(`${newLead} outbid you in the auction for ${item}`);
+      }
+    });
+  },
   mounted() {
-    axios.post("/auth").then(response => {
+    axios.post("/auth").then((response) => {
       this.currentUser = response.data.username;
     });
-    axios.post("/getListings", { query: "dash" }).then(response => {
+    axios.post("/getListings", { query: "dash" }).then((response) => {
       this.listings = response.data.listings;
     });
-  }
+  },
 };
 </script>
 

@@ -11,22 +11,33 @@
 <script>
 import NewListing from "@/components/NewListing.vue";
 import axios from "axios";
+import io from "socket.io-client";
+
+var socket = io();
 
 export default {
   name: "Index",
   components: {
-    NewListing
+    NewListing,
   },
   data() {
     return {
-      submitter: ""
+      submitter: "",
     };
   },
+  created() {
+    socket.on("outBid", (oldLead, item, newLead) => {
+      if (this.currentUser === oldLead) {
+        alert(`${newLead} outbid you in the auction for ${item}`);
+      }
+    });
+  },
+
   mounted() {
-    axios.post("/auth").then(response => {
+    axios.post("/auth").then((response) => {
       this.submitter = response.data.username;
     });
-  }
+  },
 };
 </script>
 
