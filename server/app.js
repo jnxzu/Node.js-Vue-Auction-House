@@ -35,8 +35,8 @@ app.use("/js", express.static(path.join(__dirname, "public", "js")));
 app.use("/css", express.static(path.join(__dirname, "public", "css")));
 app.use("/img", express.static(path.join(__dirname, "public", "img")));
 
-const Auction = require("../models/auction");
-const User = require("../models/user");
+const Auction = require("./models/auction");
+const User = require("./models/user");
 
 io.on("connection", (socket) => {
   socket.on("bidOrBuy", (item, qb, user) => {
