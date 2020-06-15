@@ -13,7 +13,7 @@ import NewListing from "@/components/NewListing.vue";
 import axios from "axios";
 import io from "socket.io-client";
 
-var socket = io();
+let socket = io();
 
 export default {
   name: "Index",

@@ -39,47 +39,47 @@ const Auction = require("./models/auction");
 const User = require("./models/user");
 
 io.on("connection", (socket) => {
-  socket.on("bidOrBuy", (item, qb, user, prevTopBid) => {
-    User.findOne({ username: user }).then((u) => {
-      let firstOperation = qb // auction update operation depending on type of auction
-        ? {
-            $set: { topBid: u._id, finished: true, expiry: moment() },
-            $push: { allBids: u._id },
-          }
-        : {
-            $inc: { price: 1 },
-            $set: { topBid: u._id },
-            $push: { allBids: u._id },
-          };
-
-      Auction.findOneAndUpdate({ item: item }, firstOperation).then((a) => {
-        let secondOperation = qb // user update operation depending on type of auction
+  socket.on("bidOrBuy", (item, qb, price, user, prevTopBid) => {
+    if (user)
+      User.findOne({ username: user }).then((u) => {
+        let firstOperation = qb // auction update operation depending on type of auction
           ? {
-              $push: {
-                allBids: a._id,
-                topBids: a._id,
-              },
+              $set: { topBid: u._id, finished: true, expiry: moment() },
+              $push: { allBids: u._id },
             }
-          : { $push: { allBids: a._id } };
+          : {
+              $set: { topBid: u._id, price: price },
+              $push: { allBids: u._id },
+            };
 
-        User.findByIdAndUpdate(u._id, secondOperation).then(() => {
-          if (qb)
-            console.log(
-              `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${user} bought ${
-                a.item
-              } for ${a.price}.`
-            );
-          else
-            console.log(
-              `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${user} bid ${
-                a.price
-              } for ${a.item}.`
-            );
-          if (prevTopBid) io.sockets.emit("outBid", prevTopBid, item, user);
-          io.sockets.emit("updateListing", item, u.username);
+        Auction.findOneAndUpdate({ item: item }, firstOperation).then((a) => {
+          let secondOperation = qb // user update operation depending on type of auction
+            ? {
+                $push: {
+                  allBids: a._id,
+                  topBids: a._id,
+                },
+              }
+            : { $push: { allBids: a._id } };
+
+          User.findByIdAndUpdate(u._id, secondOperation).then(() => {
+            if (qb)
+              console.log(
+                `${moment().format(
+                  "MMMM Do YYYY, h:mm:ss a"
+                )} - ${user} bought ${a.item} for ${a.price}.`
+              );
+            else
+              console.log(
+                `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${user} bid ${
+                  a.price
+                } for ${a.item}.`
+              );
+            if (prevTopBid) io.sockets.emit("outBid", prevTopBid, item, user);
+            io.sockets.emit("updateListing", item, u.username, price);
+          });
         });
       });
-    });
   });
 });
 

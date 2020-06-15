@@ -25,7 +25,7 @@ import axios from "axios";
 import Listing from "@/components/Listing.vue";
 import io from "socket.io-client";
 
-var socket = io();
+let socket = io();
 
 export default {
   name: "Index",

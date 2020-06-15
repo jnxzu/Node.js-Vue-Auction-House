@@ -44,6 +44,9 @@
       &:hover {
         letter-spacing: 2px;
       }
+      input {
+        width: 40%;
+      }
     }
     &.ended {
       background: rgb(150, 150, 150);

@@ -54,7 +54,7 @@ module.exports = (io) => {
           res.send({ success: false }); // item already listed
           return null;
         } else {
-          var newAuction = new Auction();
+          let newAuction = new Auction();
           newAuction.host = req.user.id;
           newAuction.item = req.body.item;
           if (newAuction.item.length < 2) {
@@ -263,7 +263,7 @@ module.exports = (io) => {
           if (chat) res.send({ messages: chat.messages });
           // create it if it doesnt
           else {
-            var newChat = new Chat();
+            let newChat = new Chat();
             newChat.users = [req.user.id, messageTarget._id];
             newChat.messages = [];
             newChat.save().then((newC) => {

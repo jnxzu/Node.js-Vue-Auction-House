@@ -67,6 +67,13 @@
       v-else-if="status === 'bid'"
       v-on:click="bidOrBuy()"
     >
+      <!-- <input
+        type="number"
+        id="bid-amount"
+        :min="newPrice"
+        v-model="newPrice"
+        v-if="currentUser"
+      /> -->
       BID
     </div>
   </div>
@@ -77,7 +84,7 @@ import moment from "moment";
 import axios from "axios";
 import io from "socket.io-client";
 
-var socket = io();
+let socket = io();
 
 export default {
   name: "IndexOption",
@@ -93,6 +100,7 @@ export default {
   },
   data() {
     return {
+      newPrice: this.price + 1,
       timediff: moment(this.expiry).fromNow(),
       timer: "",
       status: this.quickbuy
@@ -105,9 +113,9 @@ export default {
     };
   },
   created() {
-    socket.on("updateListing", (item, bidder) => {
+    socket.on("updateListing", (item, bidder, price) => {
       if (item === this.$props.item) {
-        this.$props.price += 1;
+        this.$props.price = price;
         this.$props.topBid = bidder;
       }
     });
@@ -121,6 +129,7 @@ export default {
         "bidOrBuy",
         this.$props.item,
         this.$props.quickbuy,
+        this.newPrice,
         this.$props.currentUser,
         this.$props.topBid
       );

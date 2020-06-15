@@ -12,7 +12,7 @@ passport.use(
 
       if (user) return done(null, false);
       else {
-        var newUser = new User();
+        let newUser = new User();
 
         newUser.username = username;
         newUser.password = newUser.generateHash(password);
