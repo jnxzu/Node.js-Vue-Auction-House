@@ -37,6 +37,9 @@
 <script>
 import moment from "moment";
 import axios from "axios";
+import io from "socket.io-client";
+
+var socket = io();
 
 export default {
   name: "IndexOption",
@@ -69,15 +72,12 @@ export default {
   },
   methods: {
     bidOrBuy: function() {
-      axios.post("/auth").then(resp => {
-        if (resp.data.authenticated) {
-          let data = {
-            item: this.$props.item,
-            quickbuy: this.$props.quickbuy
-          };
-          axios.post("/bid", data);
-        } else window.location = "/signup";
-      });
+      socket.emit(
+        "bidOrBuy",
+        this.$props.item,
+        this.$props.quickbuy,
+        this.$props.currentUser
+      );
     },
     updateStatus: function() {
       this.timediff = moment(this.expiry).fromNow();

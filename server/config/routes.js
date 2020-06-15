@@ -200,47 +200,47 @@ module.exports = (io) => {
   });
 
   // bidding or buying function
-  router.route("/bid").post((req, res) => {
-    let firstOperation = req.body.quickbuy // auction update operation depending on type of auction
-      ? {
-          $set: { topBid: req.user.id, finished: true, expiry: moment() },
-          $push: { allBids: req.user.id },
-        }
-      : {
-          $inc: { price: 1 },
-          $set: { topBid: req.user.id },
-          $push: { allBids: req.user.id },
-        };
+  // router.route("/bid").post((req, res) => {
+  //   let firstOperation = req.body.quickbuy // auction update operation depending on type of auction
+  //     ? {
+  //         $set: { topBid: req.user.id, finished: true, expiry: moment() },
+  //         $push: { allBids: req.user.id },
+  //       }
+  //     : {
+  //         $inc: { price: 1 },
+  //         $set: { topBid: req.user.id },
+  //         $push: { allBids: req.user.id },
+  //       };
 
-    Auction.findOneAndUpdate({ item: req.body.item }, firstOperation).then(
-      (a) => {
-        let secondOperation = req.body.quickbuy // user update operation depending on type of auction
-          ? {
-              $push: {
-                allBids: a._id,
-                topBids: a._id,
-              },
-            }
-          : { $push: { allBids: a._id } };
+  //   Auction.findOneAndUpdate({ item: req.body.item }, firstOperation).then(
+  //     (a) => {
+  //       let secondOperation = req.body.quickbuy // user update operation depending on type of auction
+  //         ? {
+  //             $push: {
+  //               allBids: a._id,
+  //               topBids: a._id,
+  //             },
+  //           }
+  //         : { $push: { allBids: a._id } };
 
-        User.findByIdAndUpdate(req.user.id, secondOperation).then(() => {
-          if (req.body.quickbuy)
-            console.log(
-              `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
-                req.user.username
-              } bought ${a.item} for ${a.price}.`
-            );
-          else
-            console.log(
-              `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
-                req.user.username
-              } bid ${a.price} for ${a.item}.`
-            );
-          io.sockets.emit("updateListings");
-        });
-      }
-    );
-  });
+  //       User.findByIdAndUpdate(req.user.id, secondOperation).then(() => {
+  //         if (req.body.quickbuy)
+  //           console.log(
+  //             `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
+  //               req.user.username
+  //             } bought ${a.item} for ${a.price}.`
+  //           );
+  //         else
+  //           console.log(
+  //             `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
+  //               req.user.username
+  //             } bid ${a.price} for ${a.item}.`
+  //           );
+  //         io.sockets.emit("updateListings");
+  //       });
+  //     }
+  //   );
+  // });
 
   // users retrieval function (except for requesting user)
   router

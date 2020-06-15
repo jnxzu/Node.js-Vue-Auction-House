@@ -35,6 +35,53 @@ app.use("/js", express.static(path.join(__dirname, "public", "js")));
 app.use("/css", express.static(path.join(__dirname, "public", "css")));
 app.use("/img", express.static(path.join(__dirname, "public", "img")));
 
+const Auction = require("../models/auction");
+const User = require("../models/user");
+
+io.on("connection", (socket) => {
+  socket.on("bidOrBuy", (item, qb, user) => {
+    User.findOne({ username: user }).then((u) => {
+      let firstOperation = qb // auction update operation depending on type of auction
+        ? {
+            $set: { topBid: u._id, finished: true, expiry: moment() },
+            $push: { allBids: u._id },
+          }
+        : {
+            $inc: { price: 1 },
+            $set: { topBid: u._id },
+            $push: { allBids: u._id },
+          };
+
+      Auction.findOneAndUpdate({ item: item }, firstOperation).then((a) => {
+        let secondOperation = req.body.quickbuy // user update operation depending on type of auction
+          ? {
+              $push: {
+                allBids: a._id,
+                topBids: a._id,
+              },
+            }
+          : { $push: { allBids: a._id } };
+
+        User.findByIdAndUpdate(u._id, secondOperation).then(() => {
+          if (req.body.quickbuy)
+            console.log(
+              `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
+                req.user.username
+              } bought ${a.item} for ${a.price}.`
+            );
+          else
+            console.log(
+              `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
+                req.user.username
+              } bid ${a.price} for ${a.item}.`
+            );
+          io.sockets.emit("updateListings");
+        });
+      });
+    });
+  });
+});
+
 const port = process.env.PORT || 3000;
 
 // server.listen(port,() => {
