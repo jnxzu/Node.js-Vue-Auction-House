@@ -39,7 +39,7 @@ const Auction = require("./models/auction");
 const User = require("./models/user");
 
 io.on("connection", (socket) => {
-  socket.on("bidOrBuy", (item, qb, user) => {
+  socket.on("bidOrBuy", (item, qb, user, prevTopBid) => {
     User.findOne({ username: user }).then((u) => {
       let firstOperation = qb // auction update operation depending on type of auction
         ? {
@@ -75,6 +75,7 @@ io.on("connection", (socket) => {
                 a.price
               } for ${a.item}.`
             );
+          if (prevTopBid) io.sockets.emit("outBid", prevTopBid, item, user);
           io.sockets.emit("updateListing", item, u.username);
         });
       });

@@ -9,28 +9,66 @@
       <div class="listing-group-bot">{{ item }}</div>
     </div>
     <div class="listing-group">
-      <div class="listing-group-top" v-if="status==='bid' || status==='ownerA'">current price:</div>
+      <div
+        class="listing-group-top"
+        v-if="status === 'bid' || status === 'ownerA'"
+      >
+        current price:
+      </div>
       <div class="listing-group-top" v-else>price:</div>
       <div class="listing-group-bot">{{ price }}</div>
     </div>
     <div class="listing-group">
-      <div class="listing-group-top" v-if="status==='bid' || status==='ownerA'">top bidder:</div>
+      <div
+        class="listing-group-top"
+        v-if="status === 'bid' || status === 'ownerA'"
+      >
+        top bidder:
+      </div>
       <div class="listing-group-top" v-else>bought by:</div>
       <div class="listing-group-bot" v-if="topBid">{{ topBid }}</div>
       <div class="listing-group-bot cursive" v-else>nobody</div>
     </div>
     <div class="listing-group">
-      <div class="listing-group-top" v-if="status==='bought' || status==='sold'">was bought:</div>
-      <div class="listing-group-top" v-else-if="status==='expired'">expired:</div>
+      <div
+        class="listing-group-top"
+        v-if="status === 'bought' || status === 'sold'"
+      >
+        was bought:
+      </div>
+      <div class="listing-group-top" v-else-if="status === 'expired'">
+        expired:
+      </div>
       <div class="listing-group-top" v-else>expires:</div>
       <div class="listing-group-bot">{{ timediff }}</div>
     </div>
-    <div class="listing-group-action sold" v-if="status==='sold'">SOLD</div>
-    <div class="listing-group-action bought" v-else-if="status==='bought'">BOUGHT</div>
-    <div class="listing-group-action ended" v-else-if="status==='expired'">EXPIRED</div>
-    <div class="listing-group-action owner" v-else-if="status==='ownerA' || status==='ownerQ'">OWNER</div>
-    <div class="listing-group-action buy" v-else-if="status==='buy'" v-on:click="bidOrBuy()">BUY</div>
-    <div class="listing-group-action bid" v-else-if="status==='bid'" v-on:click="bidOrBuy()">BID</div>
+    <div class="listing-group-action sold" v-if="status === 'sold'">SOLD</div>
+    <div class="listing-group-action bought" v-else-if="status === 'bought'">
+      BOUGHT
+    </div>
+    <div class="listing-group-action ended" v-else-if="status === 'expired'">
+      EXPIRED
+    </div>
+    <div
+      class="listing-group-action owner"
+      v-else-if="status === 'ownerA' || status === 'ownerQ'"
+    >
+      OWNER
+    </div>
+    <div
+      class="listing-group-action buy"
+      v-else-if="status === 'buy'"
+      v-on:click="bidOrBuy()"
+    >
+      BUY
+    </div>
+    <div
+      class="listing-group-action bid"
+      v-else-if="status === 'bid'"
+      v-on:click="bidOrBuy()"
+    >
+      BID
+    </div>
   </div>
 </template>
 
@@ -51,7 +89,7 @@ export default {
     quickbuy: Boolean,
     currentUser: String,
     topBid: String,
-    finished: Boolean
+    finished: Boolean,
   },
   data() {
     return {
@@ -63,7 +101,7 @@ export default {
           : "buy"
         : this.host === this.currentUser
         ? "ownerA"
-        : "bid"
+        : "bid",
     };
   },
   created() {
@@ -83,7 +121,8 @@ export default {
         "bidOrBuy",
         this.$props.item,
         this.$props.quickbuy,
-        this.$props.currentUser
+        this.$props.currentUser,
+        this.$props.topBid
       );
     },
     updateStatus: function() {
@@ -116,11 +155,10 @@ export default {
           else this.status = "bid";
         }
       }
-    }
+    },
   },
   beforeDestroy() {
     clearInterval(this.timer);
-  }
+  },
 };
 </script>
-

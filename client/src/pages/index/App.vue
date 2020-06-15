@@ -18,22 +18,34 @@
 <script>
 import IndexOption from "@/components/IndexOption.vue";
 import axios from "axios";
+import io from "socket.io-client";
+
+var socket = io();
 
 export default {
   name: "Index",
   components: {
-    IndexOption
+    IndexOption,
   },
   data() {
     return {
-      authenticated: false
+      authenticated: false,
+      currentUser: "",
     };
   },
-  mounted() {
-    axios.post("/auth").then(response => {
-      this.authenticated = response.data.authenticated;
+  created() {
+    socket.on("outBid", (oldLead, item, newLead) => {
+      if (this.currentUser === oldLead) {
+        alert(`${newLead} outbid you in the auction for ${item}`);
+      }
     });
-  }
+  },
+  mounted() {
+    axios.post("/auth").then((response) => {
+      this.authenticated = response.data.authenticated;
+      this.currentUser = response.data.username;
+    });
+  },
 };
 </script>
 
