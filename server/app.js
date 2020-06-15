@@ -53,7 +53,7 @@ io.on("connection", (socket) => {
           };
 
       Auction.findOneAndUpdate({ item: item }, firstOperation).then((a) => {
-        let secondOperation = req.body.quickbuy // user update operation depending on type of auction
+        let secondOperation = qb // user update operation depending on type of auction
           ? {
               $push: {
                 allBids: a._id,
@@ -63,19 +63,19 @@ io.on("connection", (socket) => {
           : { $push: { allBids: a._id } };
 
         User.findByIdAndUpdate(u._id, secondOperation).then(() => {
-          if (req.body.quickbuy)
+          if (qb)
             console.log(
-              `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
-                req.user.username
-              } bought ${a.item} for ${a.price}.`
+              `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${user} bought ${
+                a.item
+              } for ${a.price}.`
             );
           else
             console.log(
-              `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
-                req.user.username
-              } bid ${a.price} for ${a.item}.`
+              `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${user} bid ${
+                a.price
+              } for ${a.item}.`
             );
-          io.sockets.emit("updateListings");
+          io.sockets.emit("updateListing", item, u.username);
         });
       });
     });

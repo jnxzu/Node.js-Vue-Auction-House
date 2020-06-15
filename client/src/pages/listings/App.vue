@@ -23,9 +23,9 @@
 <script>
 import axios from "axios";
 import Listing from "@/components/Listing.vue";
-import io from "socket.io-client";
+// import io from "socket.io-client";
 
-var socket = io();
+// var socket = io();
 
 export default {
   name: "Index",
@@ -38,14 +38,6 @@ export default {
       currentUser: "",
       isAuth: false
     };
-  },
-  created() {
-    socket.on("updateListings", () => {
-      if (this.isAuth)
-        axios.post("/getListings", { query: "listings" }).then(response => {
-          this.listings = response.data.listings;
-        });
-    });
   },
   mounted() {
     axios.post("/auth").then(response => {

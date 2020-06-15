@@ -66,7 +66,7 @@ module.exports = (io) => {
             res.send({ success: false }); // price too low
             return null;
           }
-          newAuction.expiry = moment().add(90, "s");
+          newAuction.expiry = moment(req.body.expiry);
           newAuction.finished = false;
           newAuction.quickbuy = req.body.quickbuy;
           newAuction.save().then((a) => {

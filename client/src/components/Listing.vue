@@ -67,6 +67,13 @@ export default {
     };
   },
   created() {
+    socket.on("updateListing", (item, bidder) => {
+      if (item === this.$props.item) {
+        this.$props.price += 1;
+        this.$props.topBid = bidder;
+      }
+    });
+
     this.updateStatus();
     this.timer = setInterval(this.updateStatus, 1000 * 5);
   },
