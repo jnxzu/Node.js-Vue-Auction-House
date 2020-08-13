@@ -7,9 +7,7 @@
         class="user"
         :class="{ selected: user.username === selectedUser }"
         v-on:click="seeChat"
-      >
-        {{ user.username }}
-      </div>
+      >{{ user.username }}</div>
     </div>
     <div v-if="users.length" id="chat">
       <div id="messages">
@@ -20,9 +18,7 @@
               my: msg.author.username === currentUser,
               his: msg.author.username !== currentUser,
             }"
-          >
-            {{ msg.content }}
-          </div>
+          >{{ msg.content }}</div>
         </div>
       </div>
       <div id="sender">
@@ -35,82 +31,82 @@
 </template>
 
 <script>
-import axios from "axios";
-import io from "socket.io-client";
+import axios from 'axios';
+import io from 'socket.io-client';
 
-let socket = io();
+const socket = io();
 
 export default {
-  name: "Chat",
+  name: 'Chat',
   data() {
     return {
-      currentUser: "",
+      currentUser: '',
       users: [],
-      selectedUser: "",
+      selectedUser: '',
       messages: [],
     };
   },
   methods: {
     scrollChat() {
-      let chatDiv = document.getElementById("messages");
+      const chatDiv = document.getElementById('messages');
       chatDiv.scrollTop = chatDiv.scrollHeight;
     },
-    seeChat: function(event) {
+    seeChat(event) {
       this.selectedUser = event.target.innerText;
       axios
-        .post("/getMessages", {
+        .post('/getMessages', {
           target: this.selectedUser,
         })
         .then((response) => {
           this.messages = response.data.messages;
         });
     },
-    sendMessage: function() {
-      let msgInput = document.getElementById("sender-input");
-      let msg = msgInput.value;
+    sendMessage() {
+      const msgInput = document.getElementById('sender-input');
+      const msg = msgInput.value;
       if (msg) {
         axios
-          .post("/sendMsg", { target: this.selectedUser, content: msg })
+          .post('/sendMsg', { target: this.selectedUser, content: msg })
           .then((response) => {
             msgInput.value = response.data.clear;
           });
       } else {
-        msgInput.style.border = "1px solid red";
+        msgInput.style.border = '1px solid red';
       }
     },
     reset: () => {
-      document.getElementById("sender-input").style.border = "none";
+      document.getElementById('sender-input').style.border = 'none';
     },
   },
   beforeCreate() {
-    axios.post("/auth").then((response) => {
+    axios.post('/auth').then((response) => {
       this.currentUser = response.data.username;
       axios
-        .post("/getUsers", { excluded: this.currentUser })
-        .then((response) => {
-          this.users = response.data.users;
+        .post('/getUsers', { excluded: this.currentUser })
+        .then((usersResponse) => {
+          this.users = usersResponse.data.users;
           this.selectedUser = this.users[0].username;
           axios
-            .post("/getMessages", {
+            .post('/getMessages', {
               target: this.selectedUser,
             })
-            .then((response) => {
-              this.messages = response.data.messages;
+            .then((messagesResponse) => {
+              this.messages = messagesResponse.data.messages;
             });
         });
     });
   },
   created() {
-    socket.on("updateUsers", () => {
+    socket.on('updateUsers', () => {
       axios
-        .post("/getUsers", { excluded: this.currentUser })
+        .post('/getUsers', { excluded: this.currentUser })
         .then((response) => {
           this.users = response.data.users;
         });
     });
-    socket.on("updateMessages", () => {
+    socket.on('updateMessages', () => {
       axios
-        .post("/getMessages", {
+        .post('/getMessages', {
           target: this.selectedUser,
         })
         .then((response) => {

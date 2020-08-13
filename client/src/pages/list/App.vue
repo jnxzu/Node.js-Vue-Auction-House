@@ -9,24 +9,24 @@
 </template>
 
 <script>
-import NewListing from "@/components/NewListing.vue";
-import axios from "axios";
-import io from "socket.io-client";
+import axios from 'axios';
+import io from 'socket.io-client';
+import NewListing from '../../components/NewListing.vue';
 
-let socket = io();
+const socket = io();
 
 export default {
-  name: "Index",
+  name: 'Index',
   components: {
     NewListing,
   },
   data() {
     return {
-      submitter: "",
+      submitter: '',
     };
   },
   created() {
-    socket.on("outBid", (oldLead, item, newLead) => {
+    socket.on('outBid', (oldLead, item, newLead) => {
       if (this.currentUser === oldLead) {
         alert(`${newLead} outbid you in the auction for ${item}`);
       }
@@ -34,12 +34,12 @@ export default {
   },
 
   mounted() {
-    axios.post("/auth").then((response) => {
+    axios.post('/auth').then((response) => {
       this.submitter = response.data.username;
     });
   },
 };
 </script>
 
-<style lang="scss" src="@/style/global.scss"></style>
-<style lang="scss" src="@/style/forms.scss"></style>
+<style lang='scss' src='@/style/global.scss'></style>
+<style lang='scss' src='@/style/forms.scss'></style>

@@ -16,32 +16,32 @@
 </template>
 
 <script>
-import IndexOption from "@/components/IndexOption.vue";
-import axios from "axios";
-import io from "socket.io-client";
+import axios from 'axios';
+import io from 'socket.io-client';
+import IndexOption from '../../components/IndexOption.vue';
 
-let socket = io();
+const socket = io();
 
 export default {
-  name: "Index",
+  name: 'Index',
   components: {
     IndexOption,
   },
   data() {
     return {
       authenticated: false,
-      currentUser: "",
+      currentUser: '',
     };
   },
   created() {
-    socket.on("outBid", (oldLead, item, newLead) => {
+    socket.on('outBid', (oldLead, item, newLead) => {
       if (this.currentUser === oldLead) {
         alert(`${newLead} outbid you in the auction for ${item}`);
       }
     });
   },
   mounted() {
-    axios.post("/auth").then((response) => {
+    axios.post('/auth').then((response) => {
       this.authenticated = response.data.authenticated;
       this.currentUser = response.data.username;
     });
@@ -49,5 +49,5 @@ export default {
 };
 </script>
 
-<style lang="scss" src="@/style/global.scss"></style>
-<style lang="scss" src="@/style/index.scss"></style>
+<style lang='scss' src='@/style/global.scss'></style>
+<style lang='scss' src='@/style/index.scss'></style>

@@ -1,51 +1,52 @@
-const express = require("express");
+const express = require('express');
+
 const router = express.Router();
-const path = require("path");
-const moment = require("moment");
+const path = require('path');
+const moment = require('moment');
 
-const passport = require("../config/passport");
+const passport = require('./passport');
 
-const User = require("../models/user");
-const Chat = require("../models/chat");
-const Auction = require("../models/auction");
+const User = require('../models/user');
+const Chat = require('../models/chat');
+const Auction = require('../models/auction');
 
-const rejectMethod = (_req, res, _next) => {
+const rejectMethod = (_req, res) => {
   res.sendStatus(405);
 };
 
 module.exports = (io) => {
   // index
   router
-    .route("/")
-    .get((req, res) => {
-      res.sendFile(path.join(__dirname, "../public", "index.html"));
+    .route('/')
+    .get((_req, res) => {
+      res.sendFile(path.join(__dirname, '../public', 'index.html'));
     })
     .all(rejectMethod);
 
   // chat
   router
-    .route("/chat")
+    .route('/chat')
     .get((req, res) => {
-      if (!req.isAuthenticated()) res.redirect("/");
-      else res.sendFile(path.join(__dirname, "../public", "chat.html"));
+      if (!req.isAuthenticated()) res.redirect('/');
+      else res.sendFile(path.join(__dirname, '../public', 'chat.html'));
     })
     .all(rejectMethod);
 
   // dashboard (all listings where the user has bid)
   router
-    .route("/dashboard")
+    .route('/dashboard')
     .get((req, res) => {
-      if (!req.isAuthenticated()) res.redirect("/");
-      else res.sendFile(path.join(__dirname, "../public", "dashboard.html"));
+      if (!req.isAuthenticated()) res.redirect('/');
+      else res.sendFile(path.join(__dirname, '../public', 'dashboard.html'));
     })
     .all(rejectMethod);
 
   // list (list a new item)
   router
-    .route("/list")
+    .route('/list')
     .get((req, res) => {
-      if (!req.isAuthenticated()) res.redirect("/");
-      else res.sendFile(path.join(__dirname, "../public", "list.html"));
+      if (!req.isAuthenticated()) res.redirect('/');
+      else res.sendFile(path.join(__dirname, '../public', 'list.html'));
     })
     .post((req, res) => {
       // sends success status to style input field in frontent
@@ -53,123 +54,121 @@ module.exports = (io) => {
         if (auction) {
           res.send({ success: false }); // item already listed
           return null;
-        } else {
-          let newAuction = new Auction();
-          newAuction.host = req.user.id;
-          newAuction.item = req.body.item;
-          if (newAuction.item.length < 2) {
-            res.send({ success: false }); // name too short
-            return null;
-          }
-          newAuction.price = req.body.price;
-          if (newAuction.price < 1) {
-            res.send({ success: false }); // price too low
-            return null;
-          }
-          newAuction.expiry = moment(req.body.expiry);
-          newAuction.finished = false;
-          newAuction.quickbuy = req.body.quickbuy;
-          newAuction.save().then((a) => {
-            User.findByIdAndUpdate(req.user.id, {
-              $push: { hosting: a._id }, // add it to user's record
-            }).then(() => {
-              console.log(
-                `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
-                  newAuction.item
-                } listed by ${req.user.username} for ${newAuction.price}.`
-              );
-              io.sockets.emit("updateListings");
-              res.send({ success: true });
-            });
-          });
         }
+        const newAuction = new Auction();
+        newAuction.host = req.user.id;
+        newAuction.item = req.body.item;
+        if (newAuction.item.length < 2) {
+          res.send({ success: false }); // name too short
+          return null;
+        }
+        newAuction.price = req.body.price;
+        if (newAuction.price < 1) {
+          res.send({ success: false }); // price too low
+          return null;
+        }
+        newAuction.expiry = moment(req.body.expiry);
+        newAuction.finished = false;
+        newAuction.quickbuy = req.body.quickbuy;
+        newAuction.save().then((a) => {
+          User.findByIdAndUpdate(req.user.id, {
+            $push: { hosting: a._id }, // add it to user's record
+          }).then(() => {
+            console.log(
+              `${moment().format('MMMM Do YYYY, h:mm:ss a')} - ${
+                newAuction.item
+              } listed by ${req.user.username} for ${newAuction.price}.`,
+            );
+            io.sockets.emit('updateListings');
+            res.send({ success: true });
+          });
+        });
       });
     })
     .all(rejectMethod);
 
   // listings (all active listings)
   router
-    .route("/listings")
-    .get((req, res) => {
-      io.on("connection", function (socket) {
-        socket.emit("test");
+    .route('/listings')
+    .get((_req, res) => {
+      io.on('connection', (socket) => {
+        socket.emit('test');
       });
-      res.sendFile(path.join(__dirname, "../public", "listings.html"));
+      res.sendFile(path.join(__dirname, '../public', 'listings.html'));
     })
     .all(rejectMethod);
 
   // history (inactive listings listed or bough by user)
   router
-    .route("/history")
+    .route('/history')
     .get((req, res) => {
-      if (!req.isAuthenticated()) res.redirect("/");
-      else res.sendFile(path.join(__dirname, "../public", "history.html"));
+      if (!req.isAuthenticated()) res.redirect('/');
+      else res.sendFile(path.join(__dirname, '../public', 'history.html'));
     })
     .all(rejectMethod);
 
   // login
   router
-    .route("/login")
+    .route('/login')
     .get((req, res) => {
-      if (req.isAuthenticated()) res.redirect("/");
-      else res.sendFile(path.join(__dirname, "../public", "login.html"));
+      if (req.isAuthenticated()) res.redirect('/');
+      else res.sendFile(path.join(__dirname, '../public', 'login.html'));
     })
-    .post(passport.authenticate("local-login"), async (req, res) => {
-      res.redirect("/");
+    .post(passport.authenticate('local-login'), async (_req, res) => {
+      res.redirect('/');
     })
     .all(rejectMethod);
 
   // signup
   router
-    .route("/signup")
+    .route('/signup')
     .get((req, res) => {
-      if (req.isAuthenticated()) res.redirect("/");
-      else res.sendFile(path.join(__dirname, "../public", "signup.html"));
+      if (req.isAuthenticated()) res.redirect('/');
+      else res.sendFile(path.join(__dirname, '../public', 'signup.html'));
     })
-    .post(passport.authenticate("local-signup"), async (req, res) => {
-      io.sockets.emit("updateUsers");
-      res.redirect("/");
+    .post(passport.authenticate('local-signup'), async (_req, res) => {
+      io.sockets.emit('updateUsers');
+      res.redirect('/');
     })
     .all(rejectMethod);
 
   // logout
   router
-    .route("/logout")
+    .route('/logout')
     .get((req, res) => {
-      if (!req.isAuthenticated()) res.redirect("/");
+      if (!req.isAuthenticated()) res.redirect('/');
       else {
         console.log(
-          `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
+          `${moment().format('MMMM Do YYYY, h:mm:ss a')} - ${
             req.user.username
-          } logged out.`
+          } logged out.`,
         );
         req.logout();
-        res.redirect("/");
+        res.redirect('/');
       }
     })
     .all(rejectMethod);
 
   // authenticating function
   router
-    .route("/auth")
+    .route('/auth')
     .post((req, res) => {
-      if (req.isAuthenticated())
-        res.send({ authenticated: true, username: req.user.username });
-      else res.send({ authenticated: false, username: "" });
+      if (req.isAuthenticated()) res.send({ authenticated: true, username: req.user.username });
+      else res.send({ authenticated: false, username: '' });
     })
     .all(rejectMethod);
 
   // retrieval of listings
-  router.route("/getListings").post((req, res) => {
+  router.route('/getListings').post((req, res) => {
     let query = {};
     switch (
       req.body.query // different query depending on which page requests it
     ) {
-      case "listings":
+      case 'listings':
         query = { finished: false };
         break;
 
-      case "history":
+      case 'history':
         query = {
           $and: [
             { finished: true },
@@ -178,7 +177,7 @@ module.exports = (io) => {
         };
         break;
 
-      case "dash":
+      case 'dash':
         query = {
           $and: [
             { expiry: { $gte: new Date() } },
@@ -192,15 +191,15 @@ module.exports = (io) => {
         break;
     }
     Auction.find(query)
-      .populate("host")
-      .populate("topBid")
+      .populate('host')
+      .populate('topBid')
       .then((auctions) => {
         res.send({ listings: auctions });
       });
   });
 
   // bidding or buying function
-  // router.route("/bid").post((req, res) => {
+  // router.route('/bid').post((req, res) => {
   //   let firstOperation = req.body.quickbuy // auction update operation depending on type of auction
   //     ? {
   //         $set: { topBid: req.user.id, finished: true, expiry: moment() },
@@ -226,17 +225,17 @@ module.exports = (io) => {
   //       User.findByIdAndUpdate(req.user.id, secondOperation).then(() => {
   //         if (req.body.quickbuy)
   //           console.log(
-  //             `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
+  //             `${moment().format('MMMM Do YYYY, h:mm:ss a')} - ${
   //               req.user.username
   //             } bought ${a.item} for ${a.price}.`
   //           );
   //         else
   //           console.log(
-  //             `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
+  //             `${moment().format('MMMM Do YYYY, h:mm:ss a')} - ${
   //               req.user.username
   //             } bid ${a.price} for ${a.item}.`
   //           );
-  //         io.sockets.emit("updateListings");
+  //         io.sockets.emit('updateListings');
   //       });
   //     }
   //   );
@@ -244,26 +243,26 @@ module.exports = (io) => {
 
   // users retrieval function (except for requesting user)
   router
-    .route("/getUsers")
+    .route('/getUsers')
     .post((req, res) => {
       User.find({ username: { $ne: req.body.excluded } }).then((users) => {
-        res.send({ users: users });
+        res.send({ users });
       });
     })
     .all(rejectMethod);
 
   // message retrieval function
-  router.route("/getMessages").post((req, res) => {
+  router.route('/getMessages').post((req, res) => {
     // find the message reciever
     User.findOne({ username: req.body.target }).then((messageTarget) => {
       // check if chat exists between these two users
       Chat.findOne({ users: { $all: [req.user.id, messageTarget._id] } })
-        .populate("messages.author")
+        .populate('messages.author')
         .then((chat) => {
           if (chat) res.send({ messages: chat.messages });
           // create it if it doesnt
           else {
-            let newChat = new Chat();
+            const newChat = new Chat();
             newChat.users = [req.user.id, messageTarget._id];
             newChat.messages = [];
             newChat.save().then((newC) => {
@@ -272,7 +271,7 @@ module.exports = (io) => {
               messageTarget.save().then(() => {
                 User.findOneAndUpdate(
                   { username: req.user.username },
-                  { $push: { chats: newC._id } }
+                  { $push: { chats: newC._id } },
                 ).then(res.send({ messages: newC.messages }));
               });
             });
@@ -283,10 +282,10 @@ module.exports = (io) => {
 
   // message send function
   router
-    .route("/sendMsg")
+    .route('/sendMsg')
     .post((req, res) => {
       // create message
-      let msg = {
+      const msg = {
         author: req.user.id,
         content: req.body.content,
         date: moment(),
@@ -298,15 +297,15 @@ module.exports = (io) => {
           {
             users: { $all: [req.user.id, messageTarget._id] },
           },
-          { $push: { messages: msg } }
+          { $push: { messages: msg } },
         ).then(() => {
           console.log(
-            `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
+            `${moment().format('MMMM Do YYYY, h:mm:ss a')} - ${
               req.user.username
-            } sent "${msg.content}" to ${messageTarget.username}.`
+            } sent '${msg.content}' to ${messageTarget.username}.`,
           );
-          res.send({ clear: "" });
-          io.sockets.emit("updateMessages");
+          res.send({ clear: '' });
+          io.sockets.emit('updateMessages');
         });
       });
     })
@@ -314,35 +313,36 @@ module.exports = (io) => {
 
   // auction timeout function
   router
-    .route("/timeOutAuction")
-    .post((req, res) => {
+    .route('/timeOutAuction')
+    .post((req) => {
       // find the auction
       Auction.findOneAndUpdate(
         { item: req.body.item, finished: false },
-        { $set: { finished: true } }
+        { $set: { finished: true } },
       )
-        .populate("topBid")
+        .populate('topBid')
         .then((a) => {
           // if it had a bid award the auction to top bidder
-          if (a.topBid)
+          if (a.topBid) {
             User.findOneAndUpdate(
               { username: a.topBid.username },
-              { $push: { topBids: a._id } }
+              { $push: { topBids: a._id } },
             ).then((u) => {
               console.log(
-                `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
+                `${moment().format('MMMM Do YYYY, h:mm:ss a')} - ${
                   u.username
-                } won the auction for "${a.item}" with a bid of ${a.price}.`
+                } won the auction for '${a.item}' with a bid of ${a.price}.`,
               );
-              io.sockets.emit("updateListings");
+              io.sockets.emit('updateListings');
             });
-          else
+          } else {
             console.log(
-              `${moment().format("MMMM Do YYYY, h:mm:ss a")} - Auction for "${
+              `${moment().format('MMMM Do YYYY, h:mm:ss a')} - Auction for '${
                 a.item
-              }" expired.`
+              }' expired.`,
             );
-          io.sockets.emit("updateListings");
+          }
+          io.sockets.emit('updateListings');
         });
     })
     .all(rejectMethod);

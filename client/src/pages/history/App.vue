@@ -21,25 +21,25 @@
 </template>
 
 <script>
-import axios from "axios";
-import Listing from "@/components/Listing.vue";
-import io from "socket.io-client";
+import axios from 'axios';
+import io from 'socket.io-client';
+import Listing from '../../components/Listing.vue';
 
-let socket = io();
+const socket = io();
 
 export default {
-  name: "Index",
+  name: 'Index',
   components: {
     Listing,
   },
   data() {
     return {
       listings: [],
-      currentUser: "",
+      currentUser: '',
     };
   },
   created() {
-    socket.on("outBid", (oldLead, item, newLead) => {
+    socket.on('outBid', (oldLead, item, newLead) => {
       if (this.currentUser === oldLead) {
         alert(`${newLead} outbid you in the auction for ${item}`);
       }
@@ -47,15 +47,15 @@ export default {
   },
 
   mounted() {
-    axios.post("/auth").then((response) => {
+    axios.post('/auth').then((response) => {
       this.currentUser = response.data.username;
     });
-    axios.post("/getListings", { query: "history" }).then((response) => {
+    axios.post('/getListings', { query: 'history' }).then((response) => {
       this.listings = response.data.listings;
     });
   },
 };
 </script>
 
-<style lang="scss" src="@/style/global.scss"></style>
-<style lang="scss" src="@/style/listings.scss"></style>
+<style lang='scss' src='@/style/global.scss'></style>
+<style lang='scss' src='@/style/listings.scss'></style>

@@ -1,17 +1,17 @@
-const mongoose = require("mongoose");
-const moment = require("moment");
+const mongoose = require('mongoose');
+const moment = require('moment');
 
-mongoose.set("useFindAndModify", false);
+mongoose.set('useFindAndModify', false);
 
 (async () => {
   try {
     await mongoose.connect(
-      process.env.MONGODB_URI || "mongodb://localhost/auctionhouse",
+      process.env.MONGODB_URI || 'mongodb://localhost/auctionhouse',
       {
         useUnifiedTopology: true,
         useNewUrlParser: true,
         useCreateIndex: true,
-      }
+      },
     );
   } catch (err) {
     console.error(err);
@@ -21,14 +21,14 @@ mongoose.set("useFindAndModify", false);
 
 const db = mongoose.connection;
 
-db.on("open", () => {
+db.on('open', () => {
   console.log(
     `${moment().format(
-      "MMMM Do YYYY, h:mm:ss a"
-    )} - Database connection established.`
+      'MMMM Do YYYY, h:mm:ss a',
+    )} - Database connection established.`,
   );
 });
 
-db.on("error", console.error.bind(console, "MongoDB error: "));
+db.on('error', console.error.bind(console, 'MongoDB error: '));
 
 module.exports = mongoose;

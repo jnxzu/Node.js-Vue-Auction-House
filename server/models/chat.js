@@ -1,10 +1,12 @@
-const mongoose = require("../config/mongoose");
-const Schema = mongoose.Schema;
+const uniqueValidator = require('mongoose-unique-validator');
+const mongoose = require('../config/mongoose');
+
+const { Schema } = mongoose;
 
 const messageSchema = new Schema({
   author: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
   },
   content: {
     type: String,
@@ -15,18 +17,17 @@ const messageSchema = new Schema({
 });
 
 const chatSchema = new Schema({
-  users: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  users: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   messages: [messageSchema],
 });
 
-const uniqueValidator = require("mongoose-unique-validator");
 chatSchema.plugin(uniqueValidator);
 
-const Chat = mongoose.model("Chat", chatSchema);
+const Chat = mongoose.model('Chat', chatSchema);
 
 Chat.processErrors = (err) => {
-  let msg = {};
-  for (let key in err.errors) {
+  const msg = {};
+  for (const key in err.errors) {
     msg[key] = err.errors[key].message;
   }
   return msg;

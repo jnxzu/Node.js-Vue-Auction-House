@@ -9,18 +9,18 @@
 </template>
 
 <script>
-import Chat from "@/components/Chat.vue";
-import io from "socket.io-client";
+import io from 'socket.io-client';
+import Chat from '../../components/Chat.vue';
 
-let socket = io();
+const socket = io();
 
 export default {
-  name: "Index",
+  name: 'Index',
   components: {
     Chat,
   },
   created() {
-    socket.on("outBid", (oldLead, item, newLead) => {
+    socket.on('outBid', (oldLead, item, newLead) => {
       if (this.currentUser === oldLead) {
         alert(`${newLead} outbid you in the auction for ${item}`);
       }
@@ -29,5 +29,5 @@ export default {
 };
 </script>
 
-<style lang="scss" src="@/style/global.scss"></style>
-<style lang="scss" src="@/style/chat.scss"></style>
+<style lang='scss' src='@/style/global.scss'></style>
+<style lang='scss' src='@/style/chat.scss'></style>

@@ -6,15 +6,15 @@
 
 <script>
 export default {
-  name: "IndexOption",
+  name: 'IndexOption',
   props: {
     Option: String,
-    Dest: String
+    Dest: String,
   },
   methods: {
-    myRedirect: function() {
+    myRedirect() {
       window.location.href = this.$props.Dest;
-    }
-  }
+    },
+  },
 };
 </script>

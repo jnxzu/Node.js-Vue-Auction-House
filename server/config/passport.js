@@ -1,40 +1,39 @@
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
-const moment = require("moment");
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const moment = require('moment');
 
-const User = require("../models/user");
+const User = require('../models/user');
 
 passport.use(
-  "local-signup",
-  new LocalStrategy(function (username, password, done) {
-    User.findOne({ username: username }, function (err, user) {
+  'local-signup',
+  new LocalStrategy((username, password, done) => {
+    User.findOne({ username }, (err, user) => {
       if (err) return done(err);
 
       if (user) return done(null, false);
-      else {
-        let newUser = new User();
 
-        newUser.username = username;
-        newUser.password = newUser.generateHash(password);
+      const newUser = new User();
 
-        newUser.save(function (err) {
-          if (err) throw err;
-          console.log(
-            `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
-              newUser.username
-            } registered.`
-          );
-          return done(null, newUser);
-        });
-      }
+      newUser.username = username;
+      newUser.password = newUser.generateHash(password);
+
+      newUser.save((saveErr) => {
+        if (saveErr) throw saveErr;
+        console.log(
+          `${moment().format('MMMM Do YYYY, h:mm:ss a')} - ${
+            newUser.username
+          } registered.`,
+        );
+        return done(null, newUser);
+      });
     });
-  })
+  }),
 );
 
 passport.use(
-  "local-login",
-  new LocalStrategy(function (username, password, done) {
-    User.findOne({ username: username }, function (err, user) {
+  'local-login',
+  new LocalStrategy((username, password, done) => {
+    User.findOne({ username }, (err, user) => {
       if (err) return done(err);
 
       if (!user) {
@@ -44,13 +43,13 @@ passport.use(
       if (!user.validPassword(password)) return done(null, false);
 
       console.log(
-        `${moment().format("MMMM Do YYYY, h:mm:ss a")} - ${
+        `${moment().format('MMMM Do YYYY, h:mm:ss a')} - ${
           user.username
-        } logged in.`
+        } logged in.`,
       );
       return done(null, user);
     });
-  })
+  }),
 );
 
 passport.serializeUser((user, done) => {
@@ -70,7 +69,7 @@ passport.deserializeUser((id, done) => {
       });
     } else {
       done({
-        msg: "Incorrect ID",
+        msg: 'Incorrect ID',
       });
     }
   });

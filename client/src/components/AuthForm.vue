@@ -3,13 +3,7 @@
     <div class="input-group">
       <label for="username">username:</label>
       <br />
-      <input
-        type="text"
-        name="username"
-        id="username"
-        placeholder="User"
-        v-on:click="reset()"
-      />
+      <input type="text" name="username" id="username" placeholder="User" v-on:click="reset()" />
     </div>
     <div class="input-group">
       <label for="password">password:</label>
@@ -30,13 +24,7 @@
     <div class="input-group">
       <label for="username">username:</label>
       <br />
-      <input
-        type="text"
-        name="username"
-        id="username"
-        placeholder="User"
-        v-on:click="reset()"
-      />
+      <input type="text" name="username" id="username" placeholder="User" v-on:click="reset()" />
     </div>
     <div class="input-group">
       <label for="password">password:</label>
@@ -56,64 +44,64 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios';
 
 export default {
-  name: "AuthForm",
+  name: 'AuthForm',
   props: {
     isSignup: Boolean,
   },
   methods: {
     reset: () => {
-      document.getElementById("username").style.border = "none";
-      document.getElementById("password").style.border = "none";
+      document.getElementById('username').style.border = 'none';
+      document.getElementById('password').style.border = 'none';
     },
     login: (e) => {
       e.preventDefault();
-      let login = () => {
-        let data = {
+      const login = () => {
+        const data = {
           username: e.target[0].value,
           password: e.target[1].value,
         };
         axios
-          .post("/login", data)
+          .post('/login', data)
           .then(() => {
-            axios.post("/auth").then((response) => {
-              if (response.data.authenticated) window.location = "/";
+            axios.post('/auth').then((response) => {
+              if (response.data.authenticated) window.location = '/';
               else {
-                e.target[0].style.border = "1px solid red";
-                e.target[1].style.border = "1px solid red";
+                e.target[0].style.border = '1px solid red';
+                e.target[1].style.border = '1px solid red';
               }
             });
           })
           .catch(() => {
-            e.target[0].style.border = "1px solid red";
-            e.target[1].style.border = "1px solid red";
+            e.target[0].style.border = '1px solid red';
+            e.target[1].style.border = '1px solid red';
           });
       };
       login();
     },
     signup: (e) => {
       e.preventDefault();
-      let signup = () => {
-        let data = {
+      const signup = () => {
+        const data = {
           username: e.target[0].value,
           password: e.target[1].value,
         };
         axios
-          .post("/signup", data)
+          .post('/signup', data)
           .then(() => {
-            axios.post("/auth").then((response) => {
-              if (response.data.authenticated) window.location = "/";
+            axios.post('/auth').then((response) => {
+              if (response.data.authenticated) window.location = '/';
               else {
-                e.target[0].style.border = "1px solid red";
-                e.target[1].style.border = "1px solid red";
+                e.target[0].style.border = '1px solid red';
+                e.target[1].style.border = '1px solid red';
               }
             });
           })
           .catch(() => {
-            e.target[0].style.border = "1px solid red";
-            e.target[1].style.border = "1px solid red";
+            e.target[0].style.border = '1px solid red';
+            e.target[1].style.border = '1px solid red';
           });
       };
       signup();

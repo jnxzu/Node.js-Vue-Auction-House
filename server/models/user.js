@@ -1,6 +1,8 @@
-const mongoose = require("../config/mongoose");
-const Schema = mongoose.Schema;
-const bcrypt = require("../config/bcrypt");
+const uniqueValidator = require('mongoose-unique-validator');
+const mongoose = require('../config/mongoose');
+
+const { Schema } = mongoose;
+const bcrypt = require('../config/bcrypt');
 
 const userSchema = new Schema({
   username: {
@@ -13,28 +15,26 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  hosting: [{ type: Schema.Types.ObjectId, ref: "Auction" }],
-  topBids: [{ type: Schema.Types.ObjectId, ref: "Auction" }],
-  allBids: [{ type: Schema.Types.ObjectId, ref: "Auction" }],
-  chats: [{ type: Schema.Types.ObjectId, ref: "Chat" }],
+  hosting: [{ type: Schema.Types.ObjectId, ref: 'Auction' }],
+  topBids: [{ type: Schema.Types.ObjectId, ref: 'Auction' }],
+  allBids: [{ type: Schema.Types.ObjectId, ref: 'Auction' }],
+  chats: [{ type: Schema.Types.ObjectId, ref: 'Chat' }],
 });
 
-const uniqueValidator = require("mongoose-unique-validator");
 userSchema.plugin(uniqueValidator);
 
-userSchema.methods.generateHash = function (password) {
-  return bcrypt.hash(password);
-};
+userSchema.methods.generateHash = (password) => bcrypt.hash(password);
 
+// eslint-disable-next-line func-names
 userSchema.methods.validPassword = function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model('User', userSchema);
 
 User.processErrors = (err) => {
-  let msg = {};
-  for (let key in err.errors) {
+  const msg = {};
+  for (const key in err.errors) {
     msg[key] = err.errors[key].message;
   }
   return msg;

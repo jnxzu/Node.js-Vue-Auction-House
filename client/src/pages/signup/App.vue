@@ -9,15 +9,15 @@
 </template>
 
 <script>
-import AuthForm from "@/components/AuthForm.vue";
+import AuthForm from '../../components/AuthForm.vue';
 
 export default {
-  name: "Login",
+  name: 'Login',
   components: {
-    AuthForm
-  }
+    AuthForm,
+  },
 };
 </script>
 
-<style lang="scss" src="@/style/global.scss"></style>
-<style lang="scss" src="@/style/forms.scss"></style>
+<style lang='scss' src='@/style/global.scss'></style>
+<style lang='scss' src='@/style/forms.scss'></style>

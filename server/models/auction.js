@@ -1,16 +1,18 @@
-const mongoose = require("../config/mongoose");
-const Schema = mongoose.Schema;
+const uniqueValidator = require('mongoose-unique-validator');
+const mongoose = require('../config/mongoose');
+
+const { Schema } = mongoose;
 
 const auctionSchema = new Schema({
   host: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
   },
   item: { type: String, unique: true, minlength: 2 },
   price: { type: Number, min: 1 },
   topBid: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
   },
   expiry: {
     type: Date,
@@ -21,17 +23,16 @@ const auctionSchema = new Schema({
   quickbuy: {
     type: Boolean,
   },
-  allBids: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  allBids: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 });
 
-const uniqueValidator = require("mongoose-unique-validator");
 auctionSchema.plugin(uniqueValidator);
 
-const Auction = mongoose.model("Auction", auctionSchema);
+const Auction = mongoose.model('Auction', auctionSchema);
 
 Auction.processErrors = (err) => {
-  let msg = {};
-  for (let key in err.errors) {
+  const msg = {};
+  for (const key in err.errors) {
     msg[key] = err.errors[key].message;
   }
   return msg;
