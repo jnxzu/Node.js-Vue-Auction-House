@@ -3,16 +3,24 @@
     <div class="input-group">
       <label for="item">item:</label>
       <br />
-      <input type="text" name="item" id="item" placeholder="Item" v-on:click="reset()" />
+      <input
+        type="text"
+        name="item"
+        id="item"
+        placeholder="Item"
+        v-on:click="reset()"
+      />
     </div>
     <div class="input-group">
       <label for="price">price:</label>
       <br />
-      <input type="number" min="1" name="price" id="price" v-on:click="reset()" />
-    </div>
-    <div class="input-group">
-      <label for="expiry">expiry:</label>
-      <input type="datetime-local" name="expiry" id="expiry" min="2020-06-15T15:30" :timeNow="min" />
+      <input
+        type="number"
+        min="1"
+        name="price"
+        id="price"
+        v-on:click="reset()"
+      />
     </div>
     <div class="input-group">
       <label for="quickbuy" id="quickbuy-label">quickbuy?:</label>
@@ -25,10 +33,11 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
+import moment from "moment";
 
 export default {
-  name: 'NewListing',
+  name: "NewListing",
   data() {
     return {
       timeNow: new Date(),
@@ -39,8 +48,8 @@ export default {
   },
   methods: {
     reset: () => {
-      document.getElementById('item').style.border = 'none';
-      document.getElementById('price').style.border = 'none';
+      document.getElementById("item").style.border = "none";
+      document.getElementById("price").style.border = "none";
     },
     listItem: (e) => {
       e.preventDefault();
@@ -48,20 +57,20 @@ export default {
         item: e.target[0].value,
         price: e.target[1].value,
         quickbuy: e.target[3].checked,
-        expiry: e.target[2].value,
+        expiry: moment().add(30, "minutes"),
       };
       axios
-        .post('/list', auction)
+        .post("/list", auction)
         .then((resp) => {
-          if (resp.data.success) window.location = '/';
+          if (resp.data.success) window.location = "/";
           else {
-            e.target[0].style.border = '1px solid red';
-            e.target[1].style.border = '1px solid red';
+            e.target[0].style.border = "1px solid red";
+            e.target[1].style.border = "1px solid red";
           }
         })
         .catch(() => {
-          e.target[0].style.border = '1px solid red';
-          e.target[1].style.border = '1px solid red';
+          e.target[0].style.border = "1px solid red";
+          e.target[1].style.border = "1px solid red";
         });
     },
   },
